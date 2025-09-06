@@ -65,14 +65,14 @@ class IntegrationTestResult:
         report = f"""
 🧪 DataCollector A2A 통합 테스트 보고서
 {'='*50}
-📊 테스트 결과: {self.passed_tests}/{self.total_tests} 성공
+ 테스트 결과: {self.passed_tests}/{self.total_tests} 성공
 ⏱️  실행 시간: {duration:.2f}초
-📅 실행 시간: {self.start_time.strftime('%Y-%m-%d %H:%M:%S') if self.start_time else 'N/A'}
+ 실행 시간: {self.start_time.strftime('%Y-%m-%d %H:%M:%S') if self.start_time else 'N/A'}
 
-📋 상세 결과:
+ 상세 결과:
 """
         for test_case in self.test_cases:
-            status = "✅ 성공" if test_case["success"] else "❌ 실패"
+            status = " 성공" if test_case["success"] else " 실패"
             report += f"   {status} - {test_case['test_name']}\n"
             if not test_case["success"] and "error" in test_case["details"]:
                 report += f"     오류: {test_case['details']['error']}\n"
@@ -138,7 +138,7 @@ async def test_streaming_vs_polling(
     
     results = {"streaming": None, "polling": None, "comparison": {}}
     
-    print("  🔄 스트리밍 모드 테스트...")
+    print("   스트리밍 모드 테스트...")
     start_time = time.time()
     try:
         async with A2AClientManagerV2(
@@ -154,7 +154,7 @@ async def test_streaming_vs_polling(
             "duration": streaming_duration,
             "result": streaming_result if isinstance(streaming_result, list) else [streaming_result]
         }
-        print(f"    ✅ 스트리밍 완료 ({streaming_duration:.2f}초)")
+        print(f"     스트리밍 완료 ({streaming_duration:.2f}초)")
         
     except Exception as e:
         results["streaming"] = {
@@ -162,9 +162,9 @@ async def test_streaming_vs_polling(
             "duration": time.time() - start_time,
             "error": str(e)
         }
-        print(f"    ❌ 스트리밍 실패: {str(e)}")
+        print(f"     스트리밍 실패: {str(e)}")
     
-    print("  🔄 풀링 모드 테스트...")
+    print("   풀링 모드 테스트...")
     start_time = time.time()
     try:
         async with A2AClientManagerV2(
@@ -179,7 +179,7 @@ async def test_streaming_vs_polling(
             "duration": polling_duration,
             "result": polling_result if isinstance(polling_result, list) else [polling_result]
         }
-        print(f"    ✅ 풀링 완료 ({polling_duration:.2f}초)")
+        print(f"     풀링 완료 ({polling_duration:.2f}초)")
         
     except Exception as e:
         results["polling"] = {
@@ -187,7 +187,7 @@ async def test_streaming_vs_polling(
             "duration": time.time() - start_time,
             "error": str(e)
         }
-        print(f"    ❌ 풀링 실패: {str(e)}")
+        print(f"     풀링 실패: {str(e)}")
     
     # 결과 비교
     if results["streaming"]["success"] and results["polling"]["success"]:
@@ -199,8 +199,8 @@ async def test_streaming_vs_polling(
             "speed_difference": results["polling"]["duration"] - results["streaming"]["duration"],
             "content_consistency": streaming_final.get("status") == polling_final.get("status")
         }
-        print(f"    📊 성능 차이: 스트리밍이 {results['comparison']['speed_difference']:.2f}초 더 {'빠름' if results['comparison']['speed_difference'] > 0 else '느림'}")
-        print(f"    🔍 결과 일관성: {'일관됨' if results['comparison']['content_consistency'] else '불일치'}")
+        print(f"     성능 차이: 스트리밍이 {results['comparison']['speed_difference']:.2f}초 더 {'빠름' if results['comparison']['speed_difference'] > 0 else '느림'}")
+        print(f"     결과 일관성: {'일관됨' if results['comparison']['content_consistency'] else '불일치'}")
     
     return results
 
@@ -251,18 +251,18 @@ async def run_a2a_interface_tests(
         if isinstance(response, list) and len(response) > 1:
             test_results["format_stream_event"]["tested"] = True
             test_results["format_stream_event"]["success"] = True
-            print("    ✅ format_stream_event: 스트리밍 이벤트 감지됨")
+            print("     format_stream_event: 스트리밍 이벤트 감지됨")
         
         # extract_final_output 검증 (최종 결과 추출)
         if final_response and "status" in final_response:
             test_results["extract_final_output"]["tested"] = True
             test_results["extract_final_output"]["success"] = final_response.get("status") in ["completed", "failed"]
-            print(f"    ✅ extract_final_output: 최종 상태 = {final_response.get('status')}")
+            print(f"     extract_final_output: 최종 상태 = {final_response.get('status')}")
             
-        print("    ✅ A2A 인터페이스 테스트 완료")
+        print("     A2A 인터페이스 테스트 완료")
         
     except Exception as e:
-        print(f"    ❌ A2A 인터페이스 테스트 실패: {str(e)}")
+        print(f"     A2A 인터페이스 테스트 실패: {str(e)}")
         for test_name in test_results:
             if not test_results[test_name]["tested"]:
                 test_results[test_name]["error"] = str(e)
@@ -284,18 +284,18 @@ async def check_a2a_server() -> bool:
             response = await client.get(server_url, timeout=5.0)
             if response.status_code == 200:
                 agent_card = response.json()
-                print("✅ DataCollector A2A 서버: 정상 작동")
+                print(" DataCollector A2A 서버: 정상 작동")
                 print(f"   Agent: {agent_card.get('name', 'Unknown')}")
                 print(f"   설명: {agent_card.get('description', 'No description')}")
                 print(f"   스트리밍 지원: {agent_card.get('capabilities', {}).get('streaming', False)}")
                 return True
             else:
-                print(f"⚠️ DataCollector A2A 서버: 응답 이상 (status: {response.status_code})")
+                print(f"️ DataCollector A2A 서버: 응답 이상 (status: {response.status_code})")
                 return False
         except Exception as e:
-            print("❌ DataCollector A2A 서버: 연결 실패")
+            print(" DataCollector A2A 서버: 연결 실패")
             print(f"   오류: {str(e)[:100]}")
-            print("\n💡 해결 방법:")
+            print("\n 해결 방법:")
             print("   1. 터미널에서 다음 명령 실행:")
             print("      python -m src.a2a_agents.data_collector.data_collector_agent_a2a")
             print("   2. 서버가 포트 8001에서 실행 중인지 확인")
@@ -319,7 +319,7 @@ async def call_data_collector_via_a2a(
         "user_question": user_question,
     }
 
-    print("\n📤 요청 전송:")
+    print("\n 요청 전송:")
     print(f"   - 종목: {symbols}")
     print(f"   - 데이터: {data_types}")
     print(f"   - 질문: {user_question}")
@@ -335,7 +335,7 @@ async def call_data_collector_via_a2a(
                 return response_data
 
         except Exception as e:
-            print(f"❌ A2A 호출 실패: {str(e)}")
+            print(f" A2A 호출 실패: {str(e)}")
             raise
 
 
@@ -350,32 +350,32 @@ def format_collection_result(result: dict[str, Any]) -> None:
             # 첫 번째 데이터 파트 사용 (기존 호환성 유지)
             main_result = data_parts[0] if isinstance(data_parts, list) else data_parts
         else:
-            print("❌ 데이터 수집 실패: DataPart가 없습니다.")
+            print(" 데이터 수집 실패: DataPart가 없습니다.")
             return
     else:
         # 기존 포맷: 직접 결과 사용
         main_result = result
 
     if not main_result.get("success", False):
-        print(f"❌ 데이터 수집 실패: {main_result.get('error', 'Unknown error')}")
+        print(f" 데이터 수집 실패: {main_result.get('error', 'Unknown error')}")
         return
 
-    print("✅ 데이터 수집 성공!")
+    print(" 데이터 수집 성공!")
 
     # 수집된 데이터 파싱
     collected_data = main_result.get("collected_data", {})
 
     # 처리된 종목
     if "symbols_processed" in collected_data:
-        print(f"\n📌 처리된 종목: {collected_data['symbols_processed']}")
+        print(f"\n 처리된 종목: {collected_data['symbols_processed']}")
 
     # 도구 호출 통계
     if "tool_calls_made" in collected_data:
-        print(f"🔧 도구 호출 횟수: {collected_data['tool_calls_made']}")
+        print(f" 도구 호출 횟수: {collected_data['tool_calls_made']}")
 
     # 원시 응답 (Agent의 최종 메시지)
     if "raw_response" in collected_data:
-        print("\n📝 Agent 최종 응답:")
+        print("\n Agent 최종 응답:")
         print("-" * 50)
         response_text = collected_data["raw_response"]
         # 응답을 줄 단위로 출력 (가독성 향상)
@@ -388,7 +388,7 @@ def format_collection_result(result: dict[str, Any]) -> None:
     if "full_message_history" in result:
         message_history = result["full_message_history"]
         if message_history:
-            print(f"\n📚 전체 메시지 히스토리 ({len(message_history)}개 메시지):")
+            print(f"\n 전체 메시지 히스토리 ({len(message_history)}개 메시지):")
             print("-" * 60)
             for i, msg in enumerate(message_history, 1):
                 role = msg.get('role', 'unknown')
@@ -396,7 +396,7 @@ def format_collection_result(result: dict[str, Any]) -> None:
                 timestamp = msg.get('timestamp', 'N/A')
 
                 # 역할 이모지
-                role_emoji = {"user": "👤", "agent": "🤖", "system": "⚙️"}.get(role, "❓")
+                role_emoji = {"user": "", "agent": "🤖", "system": "️"}.get(role, "")
 
                 print(f"{role_emoji} 메시지 {i} ({role}) - {timestamp}")
                 if content:
@@ -414,7 +414,7 @@ def format_collection_result(result: dict[str, Any]) -> None:
     if "streaming_text" in result:
         streaming_text = result["streaming_text"]
         if streaming_text and streaming_text != collected_data.get("raw_response", ""):
-            print("\n🌊 스트리밍 텍스트:")
+            print("\n 스트리밍 텍스트:")
             print("-" * 50)
             # 스트리밍 텍스트를 줄 단위로 출력
             for line in streaming_text.split("\n")[:15]:  # 처음 15줄만
@@ -424,10 +424,10 @@ def format_collection_result(result: dict[str, Any]) -> None:
 
     # 이벤트 카운트 표시
     if "event_count" in result:
-        print(f"\n⚡ 처리된 이벤트 수: {result['event_count']}")
+        print(f"\n 처리된 이벤트 수: {result['event_count']}")
 
     # 메타데이터
-    print("\n📊 메타데이터:")
+    print("\n 메타데이터:")
     print(f"  - 워크플로우 상태: {main_result.get('workflow_status', 'N/A')}")
     print(f"  - Agent 타입: {main_result.get('agent_type', 'N/A')}")
     print(f"  - 성공 여부: {main_result.get('success', False)}")
@@ -445,7 +445,7 @@ async def main() -> None:
     
     # 1. A2A 서버 상태 확인
     if not await check_a2a_server():
-        print("\n⚠️ A2A 서버가 실행되지 않았습니다.")
+        print("\n️ A2A 서버가 실행되지 않았습니다.")
         print("위의 해결 방법을 따라 서버를 먼저 실행해주세요.")
         return
     
@@ -496,7 +496,7 @@ async def main() -> None:
         try:
             if test_type == "standard":
                 # 기본 데이터 수집 테스트
-                print("\n🔄 A2A 프로토콜을 통해 데이터 수집 중...")
+                print("\n A2A 프로토콜을 통해 데이터 수집 중...")
                 result = await call_data_collector_via_a2a(
                     symbols=test_case["symbols"],
                     data_types=test_case["data_types"],
@@ -576,8 +576,8 @@ async def main() -> None:
                     
                 validation = validate_a2a_output(final_result, "data_collector")
                 
-                print(f"  📋 A2AOutput 검증 결과:")
-                print(f"    - 유효성: {'✅ 통과' if validation['valid'] else '❌ 실패'}")
+                print(f"   A2AOutput 검증 결과:")
+                print(f"    - 유효성: {' 통과' if validation['valid'] else ' 실패'}")
                 print(f"    - 발견된 필드: {', '.join(validation['found_fields'])}")
                 if validation['errors']:
                     print(f"    - 오류: {', '.join(validation['errors'])}")
@@ -599,10 +599,10 @@ async def main() -> None:
             with open(output_file, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2)
             
-            print(f"\n💾 전체 결과가 {output_file}에 저장되었습니다.")
+            print(f"\n 전체 결과가 {output_file}에 저장되었습니다.")
             
         except Exception as e:
-            print(f"\n❌ 테스트 실행 중 오류 발생: {str(e)}")
+            print(f"\n 테스트 실행 중 오류 발생: {str(e)}")
             import traceback
             traceback.print_exc()
             
@@ -629,11 +629,11 @@ async def main() -> None:
     with open(report_file, "w", encoding="utf-8") as f:
         f.write(report)
     
-    print(f"\n📄 통합 테스트 보고서가 {report_file}에 저장되었습니다.")
+    print(f"\n 통합 테스트 보고서가 {report_file}에 저장되었습니다.")
     
     print_section("DataCollector A2A 통합 테스트 완료")
-    print("✨ 모든 통합 테스트가 완료되었습니다.")
-    print(f"🎯 테스트 성공률: {test_result.passed_tests}/{test_result.total_tests} ({test_result.passed_tests/test_result.total_tests*100:.1f}%)")
+    print(" 모든 통합 테스트가 완료되었습니다.")
+    print(f" 테스트 성공률: {test_result.passed_tests}/{test_result.total_tests} ({test_result.passed_tests/test_result.total_tests*100:.1f}%)")
     
     # 테스트 실패 시 종료 코드 반환
     return test_result.failed_tests == 0

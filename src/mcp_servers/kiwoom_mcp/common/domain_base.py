@@ -107,10 +107,10 @@ class KiwoomDomainServer(BaseMCPServer):
         # 모드 설정 (production mode 우선)
         if os.getenv("KIWOOM_PRODUCTION_MODE", "false").lower() == "true":
             self.mode = "production"
-            logger.warning("🚨 PRODUCTION MODE 활성화 - 실거래 주의!")
+            logger.warning(" PRODUCTION MODE 활성화 - 실거래 주의!")
         else:
             self.mode = "paper"
-            logger.info("📊 Paper Trading 모드 활성화")
+            logger.info(" Paper Trading 모드 활성화")
 
         logger.info(f"키움 API 환경변수 로드 완료: account={self.account_no[:4]}****")
 

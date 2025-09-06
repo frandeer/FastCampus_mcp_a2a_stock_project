@@ -118,12 +118,12 @@ class TradingDomainServer(KiwoomDomainServer):
     """
     키움 Trading Domain 서버 - 거래 실행 핵심 엔진.
 
-    🏗️ 아키텍처 위치:
+    ️ 아키텍처 위치:
     - **Layer 1 (MCP Server)**: 주문 실행 제공자
     - **Port**: 8030
     - **Domain**: trading_domain
 
-    📊 주요 기능:
+     주요 기능:
     1. **주문 실행**:
        - 매수/매도 주문 (market/limit order)
        - 주문 정정 (수량/가격 변경)
@@ -145,12 +145,12 @@ class TradingDomainServer(KiwoomDomainServer):
        - 주문 실행 전 검증
        - 비정상 패턴 감지
 
-    🔧 LangGraph Agent 연동:
+     LangGraph Agent 연동:
     - **TradingAgent**: 주문 실행 및 관리 (핵심 연동)
     - **SupervisorAgent**: 주문 승인 요청
     - **AnalysisAgent**: 주문 전 리스크 분석
 
-    ⚡ MCP Tools (10개):
+     MCP Tools (10개):
     - place_buy_order: 매수 주문
     - place_sell_order: 매도 주문
     - modify_order: 주문 정정
@@ -160,13 +160,13 @@ class TradingDomainServer(KiwoomDomainServer):
     - check_order_risk: 위험 검사
     - get_order_history: 주문 이력
 
-    💡 특징:
+     특징:
     - 자동 위험 관리 시스템
     - Mock trading 모드 지원
     - 주문 회수/금액 제한 사용자 설정 가능
     - 모든 주문 감사 로그 자동 기록
 
-    🔐 리스크 관리 설정:
+     리스크 관리 설정:
     - max_order_amount: 10,000,000 (최대 주문 금액)
     - max_daily_orders: 100 (일일 최대 주문 건수)
     - max_single_quantity: 10000 (단일 주문 최대 수량)

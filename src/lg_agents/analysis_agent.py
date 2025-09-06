@@ -62,10 +62,10 @@ async def create_analysis_agent(model=None, is_debug=False):
 
         # 분석용 MCP 도구 로딩 (기술적/기본적/거시경제/감성 분석)
         tools = await load_analysis_tools()
-        logger.info(f"✅ create_react_agent용 MCP 도구 로딩 완료: {len(tools)}개")
+        logger.info(f" create_react_agent용 MCP 도구 로딩 완료: {len(tools)}개")
 
         tool_names = [tool.name for tool in tools] if tools else []
-        logger.info(f"📋 로딩된 도구 목록: {tool_names}")
+        logger.info(f" 로딩된 도구 목록: {tool_names}")
 
         system_prompt = get_prompt("analysis", "system", tool_count=len(tools))
 
@@ -84,7 +84,7 @@ async def create_analysis_agent(model=None, is_debug=False):
         return agent
 
     except Exception as e:
-        logger.error(f"❌ create_react_agent 초기화 실패: {e}")
+        logger.error(f" create_react_agent 초기화 실패: {e}")
         raise RuntimeError(f"Failed to initialize create_react_agent: {e}") from e
 
 
@@ -154,9 +154,9 @@ async def analyze(
             msg_list: list[dict] = convert_to_openai_messages(result["messages"])
             full_message_history.extend(msg_list)
 
-            logger.info(f"📝 create_react_agent 메시지 히스토리 구성 완료: {len(full_message_history)}개 메시지")
+            logger.info(f" create_react_agent 메시지 히스토리 구성 완료: {len(full_message_history)}개 메시지")
         except Exception as e:
-            logger.error(f"❌ create_react_agent 메시지 히스토리 구성 중 오류: {e}")
+            logger.error(f" create_react_agent 메시지 히스토리 구성 중 오류: {e}")
             full_message_history = []
 
         tool_calls_made = sum(
@@ -182,7 +182,7 @@ async def analyze(
         }
 
     except Exception as e:
-        logger.error(f"❌ create_react_agent 기반 분석 실패: {e}")
+        logger.error(f" create_react_agent 기반 분석 실패: {e}")
         return {
             "success": False,
             "result": None,

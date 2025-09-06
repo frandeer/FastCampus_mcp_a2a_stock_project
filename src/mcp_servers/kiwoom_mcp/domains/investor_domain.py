@@ -33,12 +33,12 @@ class InvestorDomainServer(KiwoomDomainServer):
     """
     키움 Investor Domain 서버 - 투자자 동향 분석 허브.
 
-    🏗️ 아키텍처 위치:
+    ️ 아키텍처 위치:
     - **Layer 1 (MCP Server)**: 투자자 동향 제공자
     - **Port**: 8033
     - **Domain**: investor_domain
 
-    📊 주요 기능:
+     주요 기능:
     1. **외국인 매매 동향**:
        - 종목별 외국인 매매
        - 외국인 순매수 현황
@@ -59,12 +59,12 @@ class InvestorDomainServer(KiwoomDomainServer):
        - 투자자별 순매수 현황
        - 투자자별 매매 패턴
 
-    🔧 LangGraph Agent 연동:
+     LangGraph Agent 연동:
     - **DataCollectorAgent**: 투자자 동향 데이터 수집
     - **AnalysisAgent**: 투자자 행동 패턴 분석
     - **SupervisorAgent**: 시장 전체 투자자 동향 파악
 
-    ⚡ MCP Tools (10개):
+     MCP Tools (10개):
     - get_foreign_trading_trend: 외국인 매매동향
     - get_institutional_trading: 기관 매매동향
     - get_daily_institutional_trading: 일별 기관매매
@@ -74,13 +74,13 @@ class InvestorDomainServer(KiwoomDomainServer):
     - get_investor_daily_trading: 투자자별 일별 매매
     - get_stock_investor_detail: 종목별 투자자 상세
 
-    💡 특징:
+     특징:
     - 실시간 투자자 동향 트래킹
     - 기관/외국인 매매 패턴 분석
     - 투자자별 누적 매매 통계
     - 시장 심리 지표 자동 계산
 
-    📈 분석 지표:
+     분석 지표:
     - 외국인 순매수 추이
     - 기관 순매수 흐름
     - 프로그램 매매 비중

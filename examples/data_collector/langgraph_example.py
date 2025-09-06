@@ -60,7 +60,7 @@ async def main():
         agent = await create_data_collector_agent(is_debug=True)
 
         if not agent:
-            print("❌ DataCollector Agent 생성 실패")
+            print(" DataCollector Agent 생성 실패")
             return
 
         # 3. 데이터 수집 요청 실행
@@ -85,9 +85,9 @@ async def main():
         print(f"요청 데이터: {test_request['data_types']}")
         print(f"질문: {test_request['user_question']}")
 
-        print("\n🔄 데이터 수집 중... (최대 60초 소요)")
+        print("\n 데이터 수집 중... (최대 60초 소요)")
         print("⏳ 여러 도구를 호출하므로 시간이 걸릴 수 있습니다...")
-        print("🔧 예상 도구 호출: 5개 이상")
+        print(" 예상 도구 호출: 5개 이상")
 
         try:
             result = await asyncio.wait_for(

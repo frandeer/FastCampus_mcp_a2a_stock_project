@@ -70,7 +70,7 @@ async def check_mcp_servers(agent_type: str) -> bool:
     servers = get_mcp_servers_config(agent_type)
 
     if not servers:
-        print(f"⚠️ {agent_type}에 대한 서버 설정을 찾을 수 없습니다.")
+        print(f"️ {agent_type}에 대한 서버 설정을 찾을 수 없습니다.")
         return False
 
     print(f"\n{'='*60}")
@@ -84,12 +84,12 @@ async def check_mcp_servers(agent_type: str) -> bool:
             try:
                 response = await client.get(url, timeout=2.0)
                 if response.status_code == 200:
-                    print(f"✅ {name}: 정상 작동")
+                    print(f" {name}: 정상 작동")
                 else:
-                    print(f"⚠️ {name}: 응답 이상 (status: {response.status_code})")
+                    print(f"️ {name}: 응답 이상 (status: {response.status_code})")
                     all_healthy = False
             except Exception as e:
-                print(f"❌ {name}: 연결 실패 ({str(e)[:50]})")
+                print(f" {name}: 연결 실패 ({str(e)[:50]})")
                 all_healthy = False
 
     return all_healthy
@@ -115,18 +115,18 @@ async def check_a2a_servers() -> bool:
             async with aiohttp.ClientSession() as session:
                 async with session.get(f"{url}/health", timeout=3) as response:
                     if response.status == 200:
-                        print(f"✅ {name}: 정상 작동 ({url})")
+                        print(f" {name}: 정상 작동 ({url})")
                     else:
-                        print(f"⚠️ {name}: 응답 코드 {response.status} ({url})")
+                        print(f"️ {name}: 응답 코드 {response.status} ({url})")
                         all_healthy = False
         except aiohttp.ClientConnectorError:
-            print(f"❌ {name}: 연결 실패 - 서버 미실행 ({url})")
+            print(f" {name}: 연결 실패 - 서버 미실행 ({url})")
             all_healthy = False
         except asyncio.TimeoutError:
             print(f"⏳ {name}: 응답 시간 초과 ({url})")
             all_healthy = False
         except Exception as e:
-            print(f"🚫 {name}: 오류 - {str(e)} ({url})")
+            print(f" {name}: 오류 - {str(e)} ({url})")
             all_healthy = False
 
     print()
@@ -146,9 +146,9 @@ def print_server_status(servers: Dict[str, str], title: str = "서버 상태 확
     print("="*60)
 
     for name, status in servers.items():
-        if "정상" in status or "✅" in status:
-            print(f"✅ {name}: {status}")
-        elif "⚠️" in status or "⏳" in status:
-            print(f"⚠️ {name}: {status}")
+        if "정상" in status or "" in status:
+            print(f" {name}: {status}")
+        elif "️" in status or "⏳" in status:
+            print(f"️ {name}: {status}")
         else:
-            print(f"❌ {name}: {status}")
+            print(f" {name}: {status}")

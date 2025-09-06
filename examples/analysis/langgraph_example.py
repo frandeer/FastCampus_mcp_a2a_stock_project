@@ -50,8 +50,8 @@ async def main():
 
         # 1. MCP 서버 상태 확인
         if not await check_mcp_servers("analysis"):
-            print("\n⚠️ 일부 MCP 서버가 실행되지 않았습니다.")
-            print("💡 해결 방법: ./1-run-all-services.sh 실행")
+            print("\n️ 일부 MCP 서버가 실행되지 않았습니다.")
+            print(" 해결 방법: ./1-run-all-services.sh 실행")
         
         # 2. Analysis Agent 초기화
         print_section("Agent 초기화")
@@ -60,7 +60,7 @@ async def main():
         agent = await create_analysis_agent(is_debug=True)
         
         if not agent:
-            print("❌ AnalysisAgent 생성 실패")
+            print(" AnalysisAgent 생성 실패")
             return
 
         # 3. 분석 요청 준비 - 구체적인 도구 사용 요청
@@ -104,7 +104,7 @@ async def main():
         print(f"질문: {test_request['user_question'][:100]}...")
         print(f"수집된 데이터 타입: {list(test_request['collected_data'].keys())}")
 
-        print("\n🔄 분석 중... (최대 90초 소요)")
+        print("\n 분석 중... (최대 90초 소요)")
         print("⏳ 여러 도구를 호출하므로 시간이 걸릴 수 있습니다...")
 
         try:

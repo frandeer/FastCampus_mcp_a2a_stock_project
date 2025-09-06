@@ -51,7 +51,7 @@ async def create_data_collector_agent(
         from .prompts import get_prompt
 
         tools = await load_data_collector_tools()
-        logger.info(f"✅ Loaded {len(tools)} MCP tools for DataCollector")
+        logger.info(f" Loaded {len(tools)} MCP tools for DataCollector")
 
         system_prompt = get_prompt("data_collector", "system", tool_count=len(tools))
 
@@ -74,7 +74,7 @@ async def create_data_collector_agent(
             context_schema=config,
         )
 
-        logger.info("✅ DataCollector Agent created successfully with create_react_agent")
+        logger.info(" DataCollector Agent created successfully with create_react_agent")
         return agent
     except Exception as e:
         logger.error(f"Failed to create DataCollector Agent: {e}")
@@ -130,7 +130,7 @@ async def collect_data(
 
         # create_react_agent 실행 결과에서 최종 AI 메시지 추출
         if "messages" not in result:
-            logger.error(f"❌ result에 'messages' 키가 없습니다. result: {result}")
+            logger.error(f" result에 'messages' 키가 없습니다. result: {result}")
             # Try to extract messages differently
             if hasattr(result, 'messages'):
                 messages_list = result.messages
@@ -158,9 +158,9 @@ async def collect_data(
             msg_list: list[dict] = convert_to_openai_messages(messages_list)
             full_message_history.extend(msg_list)
 
-            logger.info(f"📝 create_react_agent 메시지 히스토리 구성 완료: {len(full_message_history)}개 메시지")
+            logger.info(f" create_react_agent 메시지 히스토리 구성 완료: {len(full_message_history)}개 메시지")
         except Exception as e:
-            logger.error(f"❌ create_react_agent 메시지 히스토리 구성 중 오류: {e}")
+            logger.error(f" create_react_agent 메시지 히스토리 구성 중 오류: {e}")
             full_message_history = []
 
         # create_react_agent가 수행한 도구 호출 횟수 계산
@@ -170,7 +170,7 @@ async def collect_data(
             if hasattr(msg, "tool_calls") and msg.tool_calls
         )
 
-        logger.info("🎯 create_react_agent 실행 완료 - 데이터 수집 요약:")
+        logger.info(" create_react_agent 실행 완료 - 데이터 수집 요약:")
         logger.info(f"   → 총 도구 호출 횟수: {tool_calls_made}")
         logger.info(f"   → 총 메시지 수: {len(messages_list)}")
         logger.info(f"   → 수집된 종목: {symbols}")
@@ -192,7 +192,7 @@ async def collect_data(
         }
 
     except Exception as e:
-        logger.error(f"❌ create_react_agent 기반 데이터 수집 실패: {e}")
+        logger.error(f" create_react_agent 기반 데이터 수집 실패: {e}")
         return {
             "success": False,
             "result": None,

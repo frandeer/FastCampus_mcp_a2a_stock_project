@@ -831,8 +831,7 @@ class A2AFileClient:
 class A2AClientManagerV2:
     """A2A 클라이언트 통합 관리자 V2.
 
-    기존 A2AClientManager와 100% API 호환을 유지하면서
-    내부적으로는 개선된 구조를 사용합니다.
+    기존 A2AClientManager와 100% API 호환을 유지하면서 개선된 구조를 사용합니다.
     """
 
     def __init__(

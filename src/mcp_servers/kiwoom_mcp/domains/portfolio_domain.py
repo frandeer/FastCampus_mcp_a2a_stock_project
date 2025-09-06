@@ -33,12 +33,12 @@ class PortfolioDomainServer(KiwoomDomainServer):
     """
     키움 Portfolio Domain 서버 - 포트폴리오 관리 핵심.
 
-    🏗️ 아키텍처 위치:
+    ️ 아키텍처 위치:
     - **Layer 1 (MCP Server)**: 포트폴리오 관리 제공자
     - **Port**: 8034
     - **Domain**: portfolio_domain
 
-    📊 주요 기능:
+     주요 기능:
     1. **계좌 관리**:
        - 예수금 상세 현황
        - 계좌 평가 현황
@@ -63,12 +63,12 @@ class PortfolioDomainServer(KiwoomDomainServer):
        - 벤치마크 비교
        - 포트폴리오 최적화
 
-    🔧 LangGraph Agent 연동:
+     LangGraph Agent 연동:
     - **TradingAgent**: 포트폴리오 리스크 검사 (핵심 연동)
     - **AnalysisAgent**: 포트폴리오 성과 분석
     - **SupervisorAgent**: 자산 배분 전략 수립
 
-    ⚡ MCP Tools (12개):
+     MCP Tools (12개):
     - get_account_balance: 예수금 조회
     - get_account_evaluation: 계좌 평가
     - get_position_details: 보유종목 상세
@@ -79,13 +79,13 @@ class PortfolioDomainServer(KiwoomDomainServer):
     - calculate_portfolio_risk: 포트폴리오 위험 계산
     - optimize_portfolio: 포트폴리오 최적화
 
-    💡 특징:
+     특징:
     - 실시간 포트폴리오 평가
     - 리스크 지표 자동 계산
     - 자산 배분 최적화 알고리즘
     - 성과 비교 대시보드
 
-    📈 위험 지표:
+     위험 지표:
     - VaR (Value at Risk): 95% 신뢰수준 최대 손실
     - Sharpe Ratio: 위험 대비 초과 수익률
     - MDD (Maximum Drawdown): 최대 냙폭

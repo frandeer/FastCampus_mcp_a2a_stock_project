@@ -35,22 +35,22 @@ async def test_supervisor_scenarios():
 
     # SupervisorAgent 초기화
     print_section_header("SupervisorAgent 초기화")
-    print("🔧 SupervisorAgent 생성 중...")
+    print(" SupervisorAgent 생성 중...")
 
     supervisor = None
     try:
         supervisor = SupervisorAgent()
-        print("✅ SupervisorAgent 초기화 성공!")
-        print(f"📊 Agent 이름: {supervisor.agent_name}")
-        print(f"🛠️ 노드 수: {len(supervisor.NODE_NAMES)}개")
+        print(" SupervisorAgent 초기화 성공!")
+        print(f" Agent 이름: {supervisor.agent_name}")
+        print(f"️ 노드 수: {len(supervisor.NODE_NAMES)}개")
 
         # 노드 이름들 출력
         node_names = list(supervisor.NODE_NAMES.values())
-        print(f"📋 노드 목록: {', '.join(node_names)}")
+        print(f" 노드 목록: {', '.join(node_names)}")
         print()
 
     except Exception as e:
-        print(f"❌ SupervisorAgent 초기화 실패: {e}")
+        print(f" SupervisorAgent 초기화 실패: {e}")
         return  # Exit early if initialization fails
 
     # 테스트 시나리오들 정의
@@ -64,12 +64,12 @@ async def test_supervisor_scenarios():
     print_section_header("SupervisorAgent 테스트")
 
     if supervisor is None:
-        print("❌ SupervisorAgent가 초기화되지 않아 테스트를 진행할 수 없습니다.")
+        print(" SupervisorAgent가 초기화되지 않아 테스트를 진행할 수 없습니다.")
         return
 
     try:
         # SupervisorAgent 실행
-        print("🚀 SupervisorAgent 실행 중...")
+        print(" SupervisorAgent 실행 중...")
         result = await supervisor.graph.ainvoke(
             {"messages": [HumanMessage(content=test_scenarios[0]["request"])]},
             config={"configurable": {"thread_id": str(uuid4())}},
@@ -78,10 +78,10 @@ async def test_supervisor_scenarios():
         logger.info(f"result: {result}")
 
         if result.get("success"):
-            print("✅ 요청 처리 성공!")
+            print(" 요청 처리 성공!")
 
     except Exception as e:
-        print(f"🚫 시나리오 실행 오류: {e}")
+        print(f" 시나리오 실행 오류: {e}")
         import traceback
         print(f"상세 오류: {traceback.format_exc()}")
 

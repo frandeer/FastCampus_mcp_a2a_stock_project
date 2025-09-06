@@ -38,7 +38,7 @@ logger = structlog.get_logger(__name__)
 
 class LangGraphAgentExecutorV2(AgentExecutor):
     """
-    Simplified A2A Agent Executor for LangGraph agents with A2A interface.
+    A2A Agent Executor for LangGraph agents with A2A interface.
 
     This executor leverages the standardized A2A interface implemented by each
     LangGraph agent, eliminating the need for custom result extractors and
@@ -68,7 +68,7 @@ class LangGraphAgentExecutorV2(AgentExecutor):
         self.updater: Optional[TaskUpdater] = None
         self.event_queue: Optional[EventQueue] = None
 
-        logger.info(f"✅ LangGraphAgentExecutorV2 initialized for {agent_class.__name__}")
+        logger.info(f" LangGraphAgentExecutorV2 initialized for {agent_class.__name__}")
 
     async def _ensure_agent_initialized(self):
         """Ensure the agent is initialized."""
@@ -80,7 +80,7 @@ class LangGraphAgentExecutorV2(AgentExecutor):
                 # Initialize if it has an initialize method
                 if hasattr(self.agent, 'initialize'):
                     await self.agent.initialize()
-                    logger.info(f"✅ Agent {self.agent.agent_type} initialized")
+                    logger.info(f" Agent {self.agent.agent_type} initialized")
 
             except Exception as e:
                 logger.error(f"Failed to initialize agent: {e}")
@@ -259,13 +259,13 @@ class LangGraphAgentExecutorV2(AgentExecutor):
                     # Check if this is a completion event
                     if formatted_output.get("final", False):
                         is_completed = True
-                        logger.info("🎯 Completion detected from agent")
+                        logger.info(" Completion detected from agent")
                         break
 
                 # Check for completion patterns in raw event
                 if not is_completed and self._is_completion_event(event):
                     is_completed = True
-                    logger.info("🎯 Completion detected from event pattern")
+                    logger.info(" Completion detected from event pattern")
                     break
 
             # If not completed yet, get final state
@@ -285,7 +285,7 @@ class LangGraphAgentExecutorV2(AgentExecutor):
                     _message = await self._send_a2a_output(final_output)
                     yield _message
 
-            logger.info(f"📊 Streaming complete - Events: {event_count}")
+            logger.info(f" Streaming complete - Events: {event_count}")
 
         except Exception as e:
             logger.error(f"Streaming execution failed: {e}")

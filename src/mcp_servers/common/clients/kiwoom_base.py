@@ -271,7 +271,7 @@ class KiwoomBaseClient(BaseHTTPClient):
         # 미검증 API 경고
         if verification_info["verification_status"] not in ["VERIFIED"]:
             logger.warning(
-                f"⚠️  API {api_id}는 검증되지 않은 상태입니다: {verification_info['verification_status']}"
+                f"️  API {api_id}는 검증되지 않은 상태입니다: {verification_info['verification_status']}"
             )
 
         await self._ensure_client()

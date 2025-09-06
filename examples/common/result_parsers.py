@@ -32,7 +32,7 @@ def parse_json_result(raw_result: str) -> Optional[Dict[str, Any]]:
             return None
 
     except Exception as e:
-        print(f"⚠️ JSON 파싱 실패: {str(e)}")
+        print(f"️ JSON 파싱 실패: {str(e)}")
         return None
 
 
@@ -49,7 +49,7 @@ def parse_analysis_result(raw_analysis: str) -> Optional[Dict[str, Any]]:
     analysis_data = parse_json_result(raw_analysis)
 
     if analysis_data:
-        print("\n📊 구조화된 분석 결과:")
+        print("\n 구조화된 분석 결과:")
         print(f"  - 분석 상태: {analysis_data.get('analysis_status', 'N/A')}")
         print(f"  - 투자 신호: {analysis_data.get('investment_signal', 'N/A')}")
         print(f"  - 통합 점수: {analysis_data.get('integrated_score', 'N/A')}")
@@ -57,7 +57,7 @@ def parse_analysis_result(raw_analysis: str) -> Optional[Dict[str, Any]]:
 
         # 차원별 분석
         if "dimension_analysis" in analysis_data:
-            print("\n📈 차원별 분석:")
+            print("\n 차원별 분석:")
             dims = analysis_data["dimension_analysis"]
             for dim_name, dim_data in dims.items():
                 if isinstance(dim_data, dict):
@@ -66,21 +66,21 @@ def parse_analysis_result(raw_analysis: str) -> Optional[Dict[str, Any]]:
 
         # 핵심 인사이트
         if "key_insights" in analysis_data:
-            print("\n💡 핵심 인사이트:")
+            print("\n 핵심 인사이트:")
             insights = analysis_data["key_insights"]
             for insight in insights[:3]:  # 처음 3개만
                 print(f"  • {insight}")
 
         # 리스크 요인
         if "risk_factors" in analysis_data:
-            print("\n⚠️ 리스크 요인:")
+            print("\n️ 리스크 요인:")
             risks = analysis_data["risk_factors"]
             for risk in risks[:3]:  # 처음 3개만
                 print(f"  • {risk}")
 
         return analysis_data
     else:
-        print("\n📝 원시 분석 결과:")
+        print("\n 원시 분석 결과:")
         # 원시 텍스트 출력 (처음 500자만)
         print(raw_analysis[:500])
         if len(raw_analysis) > 500:
@@ -101,7 +101,7 @@ def parse_trading_result(raw_trading: str) -> Optional[Dict[str, Any]]:
     trading_data = parse_json_result(raw_trading)
 
     if trading_data:
-        print("\n🔄 구조화된 거래 결과:")
+        print("\n 구조화된 거래 결과:")
         print(f"  - 거래 상태: {trading_data.get('trading_status', 'N/A')}")
         print(f"  - 거래 종목: {trading_data.get('symbols_traded', 'N/A')}")
         print(f"  - 전략 타입: {trading_data.get('strategy_type', 'N/A')}")
@@ -109,7 +109,7 @@ def parse_trading_result(raw_trading: str) -> Optional[Dict[str, Any]]:
         # 리스크 평가
         if "risk_assessment" in trading_data:
             risk = trading_data["risk_assessment"]
-            print(f"\n⚠️ 리스크 평가:")
+            print(f"\n️ 리스크 평가:")
             print(f"  - 리스크 점수: {risk.get('risk_score', 'N/A')}")
             print(f"  - VaR 95%: {risk.get('var_95', 'N/A')}")
             print(f"  - 포지션 한도 확인: {risk.get('position_limit_check', 'N/A')}")
@@ -117,7 +117,7 @@ def parse_trading_result(raw_trading: str) -> Optional[Dict[str, Any]]:
         # 실행된 주문
         if "orders_executed" in trading_data:
             orders = trading_data["orders_executed"]
-            print(f"\n📋 실행된 주문:")
+            print(f"\n 실행된 주문:")
             for order in orders[:3]:  # 처음 3개만
                 symbol = order.get('symbol', 'N/A')
                 action = order.get('action', 'N/A')
@@ -128,14 +128,14 @@ def parse_trading_result(raw_trading: str) -> Optional[Dict[str, Any]]:
         # Human 승인
         if "human_approval" in trading_data:
             approval = trading_data["human_approval"]
-            print(f"\n👤 Human 승인:")
+            print(f"\n Human 승인:")
             print(f"  - 승인 필요: {approval.get('required', 'N/A')}")
             print(f"  - 상태: {approval.get('status', 'N/A')}")
             print(f"  - 사유: {approval.get('reason', 'N/A')}")
 
         return trading_data
     else:
-        print("\n📝 원시 거래 결과:")
+        print("\n 원시 거래 결과:")
         # 원시 텍스트 출력 (처음 500자만)
         print(raw_trading[:500])
         if len(raw_trading) > 500:
@@ -212,17 +212,17 @@ def print_quality_validation(agent_type: str, raw_content: str):
     """
     if agent_type == "analysis":
         quality = validate_analysis_quality(raw_content)
-        print("\n📝 분석 품질 검증:")
-        print(f"  ✅ 기술적 지표 포함" if quality['has_technical'] else "  ⚠️ 기술적 지표 미포함")
-        print(f"  ✅ 기본적 지표 포함" if quality['has_fundamental'] else "  ⚠️ 기본적 지표 미포함")
-        print(f"  ✅ 명확한 투자 신호 제시" if quality['has_signal'] else "  ⚠️ 투자 신호가 불명확함")
+        print("\n 분석 품질 검증:")
+        print(f"   기술적 지표 포함" if quality['has_technical'] else "  ️ 기술적 지표 미포함")
+        print(f"   기본적 지표 포함" if quality['has_fundamental'] else "  ️ 기본적 지표 미포함")
+        print(f"   명확한 투자 신호 제시" if quality['has_signal'] else "  ️ 투자 신호가 불명확함")
 
     elif agent_type == "data_collector":
         quality = validate_data_collection_quality(raw_content)
-        print("\n📝 응답 품질 검증:")
-        print(f"  ✅ 수치 데이터 포함됨" if quality['has_numbers'] else "  ⚠️ 수치 데이터가 없음 - 실제 도구 호출 확인 필요")
-        print(f"  ✅ 도구 이름 언급됨" if quality['has_tool_names'] else "  ⚠️ 도구 이름이 언급되지 않음")
-        print(f"  ✅ 추측성 표현 없음" if not quality['has_speculation'] else "  ⚠️ 추측성 표현 발견 - 실제 데이터 사용 확인 필요")
+        print("\n 응답 품질 검증:")
+        print(f"   수치 데이터 포함됨" if quality['has_numbers'] else "  ️ 수치 데이터가 없음 - 실제 도구 호출 확인 필요")
+        print(f"   도구 이름 언급됨" if quality['has_tool_names'] else "  ️ 도구 이름이 언급되지 않음")
+        print(f"   추측성 표현 없음" if not quality['has_speculation'] else "  ️ 추측성 표현 발견 - 실제 데이터 사용 확인 필요")
 
 
 def format_workflow_result(workflow_state: Dict[str, Any]) -> str:
@@ -235,19 +235,19 @@ def format_workflow_result(workflow_state: Dict[str, Any]) -> str:
     Returns:
         str: 포맷팅된 결과 문자열
     """
-    lines = ["\n📊 **워크플로우 실행 결과**:"]
+    lines = ["\n **워크플로우 실행 결과**:"]
     lines.append("=" * 40)
 
     # 각 단계별 결과 확인
     steps = {
-        "collected_data": ("데이터 수집", "📈"),
-        "analysis_result": ("분석 실행", "📊"),
-        "trading_result": ("거래 실행", "💹")
+        "collected_data": ("데이터 수집", ""),
+        "analysis_result": ("분석 실행", ""),
+        "trading_result": ("거래 실행", "")
     }
 
     for key, (label, icon) in steps.items():
         if key in workflow_state and workflow_state[key]:
-            lines.append(f"  ✅ {label}: 완료")
+            lines.append(f"   {label}: 완료")
         else:
             lines.append(f"  ⏸️ {label}: 미실행")
 

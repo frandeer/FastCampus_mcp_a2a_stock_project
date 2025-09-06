@@ -64,9 +64,9 @@ class LangGraphAgentExecutor(AgentExecutor):
         self._active_tasks: dict[str, asyncio.Task] = {}
 
         if graph:
-            logger.info("✅ LangGraphAgentExecutor: Graph 기반 초기화")
+            logger.info(" LangGraphAgentExecutor: Graph 기반 초기화")
         else:
-            logger.warning("⚠️ LangGraphAgentExecutor: Graph가 제공되지 않음")
+            logger.warning("️ LangGraphAgentExecutor: Graph가 제공되지 않음")
 
     def _get_result_extractor(self, custom_extractor: Callable[[dict[str, Any]], str] | None) -> Callable[[dict[str, Any]], str]:
         """Get the appropriate result extractor based on agent type."""
@@ -83,9 +83,9 @@ class LangGraphAgentExecutor(AgentExecutor):
         complete_task: bool = True,
     ) -> None:
         """Send result as TextPart, DataPart, or both based on content type."""
-        logger.info(f"🔧 _send_result called with result type: {type(result)}")
-        logger.info(f"🔧 _send_result - result is dict: {isinstance(result, dict)}")
-        logger.info(f"🔧 _send_result - result keys: {list(result.keys()) if isinstance(result, dict) else 'N/A'}")
+        logger.info(f" _send_result called with result type: {type(result)}")
+        logger.info(f" _send_result - result is dict: {isinstance(result, dict)}")
+        logger.info(f" _send_result - result keys: {list(result.keys()) if isinstance(result, dict) else 'N/A'}")
 
         if isinstance(result, dict) and result:
             # For structured data, send both text description and data
@@ -97,48 +97,48 @@ class LangGraphAgentExecutor(AgentExecutor):
 
             if not is_already_extracted and self.result_extractor:
                 try:
-                    logger.info(f"🔧 Calling result_extractor with result: {type(result)}")
+                    logger.info(f" Calling result_extractor with result: {type(result)}")
                     extracted = self.result_extractor(result)
-                    logger.info(f"🔧 result_extractor returned: {type(extracted)}")
+                    logger.info(f" result_extractor returned: {type(extracted)}")
 
                     # result_extractor가 dict를 반환하면 DataPart용이고, str이면 TextPart용
                     if isinstance(extracted, str) and extracted:
-                        logger.info(f"🔧 result_extractor returned text: {extracted[:100]}...")
+                        logger.info(f" result_extractor returned text: {extracted[:100]}...")
                         parts.append(Part(root=TextPart(text=extracted)))
-                        logger.info("✅ Added TextPart to response")
+                        logger.info(" Added TextPart to response")
                     elif isinstance(extracted, dict):
-                        logger.info(f"🔧 result_extractor returned dict: {list(extracted.keys())}")
+                        logger.info(f" result_extractor returned dict: {list(extracted.keys())}")
                         # dict를 반환한 경우, 이것을 result로 사용
                         result = extracted
-                        logger.info("🔧 Using extracted dict as result")
+                        logger.info(" Using extracted dict as result")
                     else:
-                        logger.info(f"🔧 result_extractor returned unexpected type: {type(extracted)}")
+                        logger.info(f" result_extractor returned unexpected type: {type(extracted)}")
                 except Exception as e:
-                    logger.error(f"❌ result_extractor failed: {e}")
+                    logger.error(f" result_extractor failed: {e}")
                     pass
             else:
-                logger.info("🔧 Result is already extracted or no result_extractor, using as-is")
+                logger.info(" Result is already extracted or no result_extractor, using as-is")
 
             # Add structured data
             # Clean the result to ensure it's JSON serializable
-            logger.info("🔧 Cleaning result for JSON serialization...")
+            logger.info(" Cleaning result for JSON serialization...")
             clean_result = self._clean_for_json(result)
-            logger.info(f"🔧 clean_result: {clean_result}")
+            logger.info(f" clean_result: {clean_result}")
             if clean_result:
                 parts.append(Part(root=DataPart(data=clean_result)))
-                logger.info("✅ Added DataPart to response")
+                logger.info(" Added DataPart to response")
             else:
-                logger.warning("⚠️ clean_result is empty, no DataPart added")
+                logger.warning("️ clean_result is empty, no DataPart added")
 
             # Create and enqueue message
-            logger.info(f"🔧 Total parts created: {len(parts)}")
+            logger.info(f" Total parts created: {len(parts)}")
             if parts:
                 message = new_agent_parts_message(parts)
-                logger.info(f"🔧 Enqueuing message with {len(parts)} parts")
+                logger.info(f" Enqueuing message with {len(parts)} parts")
                 await event_queue.enqueue_event(message)
-                logger.info("✅ Message enqueued successfully")
+                logger.info(" Message enqueued successfully")
             else:
-                logger.warning("⚠️ No parts created, no message sent")
+                logger.warning("️ No parts created, no message sent")
         elif result:
             # For simple text results
             text = (
@@ -149,12 +149,12 @@ class LangGraphAgentExecutor(AgentExecutor):
             if text:
                 message = new_agent_text_message(text)
                 await event_queue.enqueue_event(message)
-                logger.info("✅ Text message enqueued successfully")
+                logger.info(" Text message enqueued successfully")
 
         # Handle task completion based on complete_task parameter
         if complete_task:
             await updater.complete()
-            logger.info("✅ Task completed via _send_result")
+            logger.info(" Task completed via _send_result")
 
     def _clean_for_json(self, obj: Any) -> Any:
         """Clean object to be JSON serializable."""
@@ -221,28 +221,28 @@ class LangGraphAgentExecutor(AgentExecutor):
             if self.result_extractor:
                 extracted = self.result_extractor(result)
                 if extracted and extracted.strip():
-                    logger.info(f"✅ Result extractor 사용: {extracted[:100]}...")
+                    logger.info(f" Result extractor 사용: {extracted[:100]}...")
                     return extracted
 
             # 2. 스트리밍 중 수집된 메시지 사용
             if collected_messages:
                 collected_text = "".join(collected_messages)
                 if collected_text.strip():
-                    logger.info(f"✅ 스트리밍 메시지 사용: {collected_text[:100]}...")
+                    logger.info(f" 스트리밍 메시지 사용: {collected_text[:100]}...")
                     return collected_text
 
             # 3. 기본 텍스트 추출 (폴백)
             text_result = self._default_extract_text(result)
             if text_result and text_result.strip():
-                logger.info(f"✅ 기본 텍스트 추출: {text_result[:100]}...")
+                logger.info(f" 기본 텍스트 추출: {text_result[:100]}...")
                 return text_result
 
             # 4. 최종 폴백
-            logger.warning("⚠️ 메시지 추출 실패, 폴백 메시지 사용")
+            logger.warning("️ 메시지 추출 실패, 폴백 메시지 사용")
             return "작업이 완료되었습니다."
 
         except Exception as e:
-            logger.error(f"❌ 메시지 추출 중 오류: {e}")
+            logger.error(f" 메시지 추출 중 오류: {e}")
             if collected_messages:
                 return "".join(collected_messages)
             return "작업이 완료되었습니다."
@@ -284,7 +284,7 @@ class LangGraphAgentExecutor(AgentExecutor):
             logger.info("TaskUpdater created successfully")
 
             # Graph 기반 실행 (create_react_agent에서 생성된 graph 사용)
-            logger.info("🔄 Using graph-based execution")
+            logger.info(" Using graph-based execution")
 
             # RequestContext.configuration.blocking 확인
             is_blocking = False  # 기본적으로 스트리밍 모드 사용
@@ -323,9 +323,9 @@ class LangGraphAgentExecutor(AgentExecutor):
                 logger.info("Using synchronous execution (ainvoke)")
 
                 try:
-                    logger.info(f"🚀 Starting ainvoke with processed_input: {type(processed_input)}")
-                    logger.info(f"🚀 Graph type: {type(self.graph)}")
-                    logger.info(f"🚀 Config: configurable thread_id: {context_id}")
+                    logger.info(f" Starting ainvoke with processed_input: {type(processed_input)}")
+                    logger.info(f" Graph type: {type(self.graph)}")
+                    logger.info(f" Config: configurable thread_id: {context_id}")
 
                     # TODO: 이 부분을 각 호출 함수들로 바꿔야함
                     result = await self.graph.ainvoke(
@@ -334,10 +334,10 @@ class LangGraphAgentExecutor(AgentExecutor):
                         stream_mode="messages",
                     )
 
-                    logger.info(f"✅ ainvoke completed successfully, result type: {type(result)}")
-                    logger.info(f"✅ Result is None: {result is None}")
+                    logger.info(f" ainvoke completed successfully, result type: {type(result)}")
+                    logger.info(f" Result is None: {result is None}")
                     if result:
-                        logger.info(f"✅ Result keys: {list(result.keys()) if hasattr(result, 'keys') else 'Not a dict'}")
+                        logger.info(f" Result keys: {list(result.keys()) if hasattr(result, 'keys') else 'Not a dict'}")
 
                     # ainvoke 결과가 None인 경우 최종 상태 가져오기
                     if result is None:
@@ -364,20 +364,20 @@ class LangGraphAgentExecutor(AgentExecutor):
                             # DataPart 전송 후 클라이언트가 수신할 시간을 확보
                             logger.info("⏳ DataPart 전송 후 클라이언트 수신 대기 중...")
                             await asyncio.sleep(0.5)  # 500ms 대기
-                            logger.info("✅ 클라이언트 수신 대기 완료")
+                            logger.info(" 클라이언트 수신 대기 완료")
 
                             await updater.complete()
-                            logger.info("✅ [Sync Mode] Task completed with DataPart response")
+                            logger.info(" [Sync Mode] Task completed with DataPart response")
                             return
                         elif isinstance(extracted_result, str) and extracted_result:
-                            logger.info("📝 [Sync Mode] result_extractor returned text")
+                            logger.info(" [Sync Mode] result_extractor returned text")
                             # 텍스트가 반환된 경우 TextPart로 전송
                             await updater.update_status(
                                 TaskState.completed,
                                 new_agent_text_message(extracted_result, context_id, task_id),
                                 final=True,
                             )
-                            logger.info("✅ [Sync Mode] Task completed with text response")
+                            logger.info(" [Sync Mode] Task completed with text response")
                             return
                         else:
                             logger.info(f"ℹ️ [Sync Mode] result_extractor returned {type(extracted_result)}, falling back to text extraction")
@@ -412,7 +412,7 @@ class LangGraphAgentExecutor(AgentExecutor):
                     raise
 
             # 스트리밍 실행 (astream_events 사용)
-            logger.info("🚀 Starting streaming execution with astream_events")
+            logger.info(" Starting streaming execution with astream_events")
             logger.info(f"Thread ID: {context_id}, Task ID: {task_id}")
 
             # EventQueue 상태 확인
@@ -451,7 +451,7 @@ class LangGraphAgentExecutor(AgentExecutor):
                         try:
                             # 작업 진행 중임을 알리는 상태 업데이트
                             await updater.update_status(TaskState.working)
-                            logger.debug(f"💓 Heartbeat sent after {HEARTBEAT_INTERVAL}s")
+                            logger.debug(f" Heartbeat sent after {HEARTBEAT_INTERVAL}s")
                             last_heartbeat_time = current_time
                         except Exception as e:
                             logger.warning(f"Failed to send heartbeat: {e}")
@@ -466,40 +466,40 @@ class LangGraphAgentExecutor(AgentExecutor):
                     if event_type == "on_chain_start":
                         node_name = event.get("name", "unknown")
                         node_count += 1
-                        logger.debug(f"📍 [{node_count}] Starting node: {node_name}")
+                        logger.debug(f" [{node_count}] Starting node: {node_name}")
 
                     elif event_type == "on_chain_end":
                         node_name = event.get("name", "unknown")
-                        logger.debug(f"✓ Node completed: {node_name}")
+                        logger.debug(f" Node completed: {node_name}")
 
                         # DataCollector 노드 결과 직접 캐치
                         if node_name == "process_collection":
                             output = event.get("data", {}).get("output", {})
                             if output and isinstance(output, dict):
                                 process_collection_result = output
-                                logger.info(f"🎯 [Direct Capture] DataCollector result: {list(output.keys())}")
-                                logger.info(f"🎯 [Direct Capture] DataCollector success: {output.get('success', False)}")
+                                logger.info(f" [Direct Capture] DataCollector result: {list(output.keys())}")
+                                logger.info(f" [Direct Capture] DataCollector success: {output.get('success', False)}")
 
                         # 완료 노드 감지: __end__, process_collection
                         # process_collection: DataCollectorAgentA2A 메인 노드
                         completion_nodes = ["__end__", "process_collection"]
                         if node_name in completion_nodes and not is_completed:
                             is_completed = True
-                            logger.info(f"🎯 Graph completion detected at node: {node_name}")
+                            logger.info(f" Graph completion detected at node: {node_name}")
 
                             # 현재 상태에서 최종 메시지 추출 (수집된 메시지 포함)
                             try:
-                                logger.info(f"🔍 Getting state for thread_id: {context_id}")
+                                logger.info(f" Getting state for thread_id: {context_id}")
                                 current_state = await self.graph.aget_state(
                                     config={"configurable": {"thread_id": context_id}}
                                 )
 
-                                logger.info(f"🔍 State retrieval result: {current_state is not None}")
+                                logger.info(f" State retrieval result: {current_state is not None}")
                                 if current_state:
-                                    logger.info(f"🔍 State.values: {current_state.values is not None}")
+                                    logger.info(f" State.values: {current_state.values is not None}")
                                     if current_state.values:
-                                        logger.info(f"🔍 State.values keys: {list(current_state.values.keys()) if isinstance(current_state.values, dict) else type(current_state.values)}")
-                                        logger.info(f"🔍 State.values content: {current_state.values}")
+                                        logger.info(f" State.values keys: {list(current_state.values.keys()) if isinstance(current_state.values, dict) else type(current_state.values)}")
+                                        logger.info(f" State.values content: {current_state.values}")
 
                                 if current_state and current_state.values:
                                     # 수집된 메시지를 _extract_final_message에 전달
@@ -507,7 +507,7 @@ class LangGraphAgentExecutor(AgentExecutor):
                                         current_state.values,
                                         collected_messages=collected_messages
                                     )
-                                    logger.info(f"✅ Extracted final message from state: {final_text[:100]}...")
+                                    logger.info(f" Extracted final message from state: {final_text[:100]}...")
                                 else:
                                     # 상태가 없는 경우 수집된 메시지만으로 처리
                                     logger.warning("No state values found, using collected messages")
@@ -517,7 +517,7 @@ class LangGraphAgentExecutor(AgentExecutor):
                                     )
 
                             except Exception as e:
-                                logger.warning(f"⚠️ Failed to extract state result: {e}")
+                                logger.warning(f"️ Failed to extract state result: {e}")
                                 # 에러 시에도 수집된 메시지를 활용
                                 final_text = await self._extract_final_message(
                                     {},
@@ -529,24 +529,24 @@ class LangGraphAgentExecutor(AgentExecutor):
 
                             # 1순위: 직접 캐치한 DataCollector 결과 사용
                             if process_collection_result and isinstance(process_collection_result, dict):
-                                logger.info("🎯 Using directly captured DataCollector result")
+                                logger.info(" Using directly captured DataCollector result")
                                 result_to_use = process_collection_result
                             # 2순위: LangGraph 상태 사용
                             elif current_state and current_state.values:
-                                logger.info("🎯 Using LangGraph state result")
+                                logger.info(" Using LangGraph state result")
                                 result_to_use = current_state.values
 
                             if result_to_use:
-                                logger.info("🔧 Extracting result using result_extractor...")
+                                logger.info(" Extracting result using result_extractor...")
                                 try:
                                     # result_extractor가 Dict를 반환한다면 _send_result 사용
                                     extracted_result = self.result_extractor(result_to_use)
                                     if isinstance(extracted_result, dict):
-                                        logger.info("✅ result_extractor returned dict, using _send_result")
+                                        logger.info(" result_extractor returned dict, using _send_result")
                                         await self._send_result(updater, extracted_result, event_queue, complete_task=True)
                                         # 완료 플래그 설정 (스트리밍 루프 정상 종료)
                                         is_completed = True
-                                        logger.info("✅ DataPart response sent, task completed")
+                                        logger.info(" DataPart response sent, task completed")
                                         break  # 스트리밍 루프 정상 종료
                                     else:
                                         logger.info("ℹ️ result_extractor returned text, using text message")
@@ -557,10 +557,10 @@ class LangGraphAgentExecutor(AgentExecutor):
                                         )
                                         # 완료 플래그 설정
                                         is_completed = True
-                                        logger.info("✅ Text response sent, task completed")
+                                        logger.info(" Text response sent, task completed")
                                         break
                                 except Exception as e:
-                                    logger.error(f"❌ Failed to extract result: {e}")
+                                    logger.error(f" Failed to extract result: {e}")
                                     # 폴백으로 텍스트 메시지 사용
                                     await updater.update_status(
                                         TaskState.completed,
@@ -568,7 +568,7 @@ class LangGraphAgentExecutor(AgentExecutor):
                                         final=True,
                                     )
                                     is_completed = True
-                                    logger.info("✅ Error handled with text fallback, task completed")
+                                    logger.info(" Error handled with text fallback, task completed")
                                     break
                             else:
                                 # 결과가 없는 경우 텍스트 메시지만 사용
@@ -578,11 +578,11 @@ class LangGraphAgentExecutor(AgentExecutor):
                                     final=True,
                                 )
                                 is_completed = True
-                                logger.info("✅ Fallback text response sent, task completed")
+                                logger.info(" Fallback text response sent, task completed")
                                 break
 
                             # 이미 return 했으므로 여기는 도달하지 않음
-                            logger.info("✅ Task completed after streaming")
+                            logger.info(" Task completed after streaming")
                             break
 
                     # 상태 업데이트 이벤트 처리
@@ -636,11 +636,11 @@ class LangGraphAgentExecutor(AgentExecutor):
                                                     task_id,
                                                 ),
                                             )
-                                            logger.debug(f"📤 Sent buffered message ({buffer_size} chars)")
+                                            logger.debug(f" Sent buffered message ({buffer_size} chars)")
                                             message_buffer.clear()
                                             buffer_size = 0
                                         except Exception as e:
-                                            logger.warning(f"⚠️ Failed to send buffered message: {e}")
+                                            logger.warning(f"️ Failed to send buffered message: {e}")
 
                     # LLM 완료 이벤트
                     elif event_type == "on_llm_end":
@@ -665,7 +665,7 @@ class LangGraphAgentExecutor(AgentExecutor):
 
                 # 스트리밍 완료 통계
                 streaming_duration = asyncio.get_event_loop().time() - streaming_start_time
-                logger.info("📊 Streaming Statistics:")
+                logger.info(" Streaming Statistics:")
                 logger.info(f"  - Total events: {event_count}")
                 logger.info(f"  - Nodes executed: {node_count}")
                 logger.info(f"  - Messages collected: {len(collected_messages)}")
@@ -674,21 +674,21 @@ class LangGraphAgentExecutor(AgentExecutor):
 
                 # 스트리밍이 완료되었는데 __end__ 노드를 못 만난 경우
                 if not is_completed:
-                    logger.info("⚠️ Streaming ended without explicit completion node")
+                    logger.info("️ Streaming ended without explicit completion node")
 
                     # LangGraph의 현재 상태를 가져와서 결과 추출
                     try:
-                        logger.info(f"🔍 [Fallback] Getting state for thread_id: {context_id}")
+                        logger.info(f" [Fallback] Getting state for thread_id: {context_id}")
                         current_state = await self.graph.aget_state(
                             config={"configurable": {"thread_id": context_id}}
                         )
 
-                        logger.info(f"🔍 [Fallback] State retrieval result: {current_state is not None}")
+                        logger.info(f" [Fallback] State retrieval result: {current_state is not None}")
                         if current_state:
-                            logger.info(f"🔍 [Fallback] State.values: {current_state.values is not None}")
+                            logger.info(f" [Fallback] State.values: {current_state.values is not None}")
                             if current_state.values:
-                                logger.info(f"🔍 [Fallback] State.values keys: {list(current_state.values.keys()) if isinstance(current_state.values, dict) else type(current_state.values)}")
-                                logger.info(f"🔍 [Fallback] State.values content: {current_state.values}")
+                                logger.info(f" [Fallback] State.values keys: {list(current_state.values.keys()) if isinstance(current_state.values, dict) else type(current_state.values)}")
+                                logger.info(f" [Fallback] State.values content: {current_state.values}")
 
                         # 상태에서 최종 메시지 추출 (수집된 메시지 포함)
                         if current_state and current_state.values:
@@ -696,7 +696,7 @@ class LangGraphAgentExecutor(AgentExecutor):
                                 current_state.values,
                                 collected_messages=collected_messages
                             )
-                            logger.info(f"✅ Extracted final message from graph state: {final_text[:100]}...")
+                            logger.info(f" Extracted final message from graph state: {final_text[:100]}...")
                         else:
                             # 상태가 없어도 수집된 메시지로 시도
                             logger.warning("No state values found, using only collected messages")
@@ -706,7 +706,7 @@ class LangGraphAgentExecutor(AgentExecutor):
                             )
 
                     except Exception as e:
-                        logger.warning(f"⚠️ Failed to extract state result: {e}")
+                        logger.warning(f"️ Failed to extract state result: {e}")
                         # 에러 시에도 수집된 메시지를 활용
                         final_text = await self._extract_final_message(
                             {},
@@ -723,15 +723,15 @@ class LangGraphAgentExecutor(AgentExecutor):
                         logger.debug(f"Failed to get fallback state: {e}")
 
                     if current_state and current_state.values:
-                        logger.info("🔧 [Fallback] Extracting result using result_extractor...")
+                        logger.info(" [Fallback] Extracting result using result_extractor...")
                         try:
                             extracted_result = self.result_extractor(current_state.values)
                             if isinstance(extracted_result, dict):
-                                logger.info("✅ [Fallback] result_extractor returned dict, using _send_result")
+                                logger.info(" [Fallback] result_extractor returned dict, using _send_result")
                                 await self._send_result(updater, extracted_result, event_queue, complete_task=True)
                                 # 완료 플래그 설정
                                 is_completed = True
-                                logger.info("✅ [Fallback] DataPart response sent, task completed")
+                                logger.info(" [Fallback] DataPart response sent, task completed")
                             else:
                                 logger.info("ℹ️ [Fallback] result_extractor returned text, using text message")
                                 await updater.update_status(
@@ -740,16 +740,16 @@ class LangGraphAgentExecutor(AgentExecutor):
                                     final=True,
                                 )
                                 is_completed = True
-                                logger.info("✅ [Fallback] Text response sent, task completed")
+                                logger.info(" [Fallback] Text response sent, task completed")
                         except Exception as e:
-                            logger.error(f"❌ [Fallback] Failed to extract result: {e}")
+                            logger.error(f" [Fallback] Failed to extract result: {e}")
                             await updater.update_status(
                                 TaskState.completed,
                                 new_agent_text_message(final_text, context_id, task_id),
                                 final=True,
                             )
                             is_completed = True
-                            logger.info("✅ [Fallback] Error handled with text response, task completed")
+                            logger.info(" [Fallback] Error handled with text response, task completed")
                     else:
                         # 폴백: 텍스트 메시지만 사용
                         await updater.update_status(
@@ -758,9 +758,9 @@ class LangGraphAgentExecutor(AgentExecutor):
                             final=True,
                         )
                         is_completed = True
-                        logger.info("✅ [Fallback] Text-only response sent, task completed")
+                        logger.info(" [Fallback] Text-only response sent, task completed")
 
-                    logger.info("✅ Task completed after streaming (fallback completion)")
+                    logger.info(" Task completed after streaming (fallback completion)")
 
             except Exception as e:
                 logger.error(f"Error during streaming: {e}")
@@ -971,7 +971,7 @@ class LangGraphAgentExecutor(AgentExecutor):
                     # Optionally notify about tool execution
                     if self.config.enable_interrupt_handling:
                         message = new_agent_text_message(
-                            f"\n🔧 Executing tool: {tool_name}\n"
+                            f"\n Executing tool: {tool_name}\n"
                         )
                         try:
                             await event_queue.enqueue_event(message)

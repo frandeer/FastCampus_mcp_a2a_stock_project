@@ -97,7 +97,7 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
         try:
             # Load MCP tools
             self.tools = await load_trading_tools()
-            logger.info(f"✅ Loaded {len(self.tools)} MCP tools for Trading")
+            logger.info(f" Loaded {len(self.tools)} MCP tools for Trading")
 
             # Get system prompt
             system_prompt = get_prompt("trading", "system", tool_count=len(self.tools))
@@ -114,7 +114,7 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
                 context_schema=config
             )
 
-            logger.info("✅ Trading A2A Agent initialized successfully")
+            logger.info(" Trading A2A Agent initialized successfully")
 
         except Exception as e:
             logger.error(f"Failed to initialize Trading Agent: {e}")
@@ -202,7 +202,7 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
             if "order" in tool_name.lower():
                 return self.create_a2a_output(
                     status="working",
-                    text_content=f"📊 주문 준비 중: {tool_name}",
+                    text_content=f" 주문 준비 중: {tool_name}",
                     stream_event=True,
                     metadata={
                         "event_type": "tool_start",
@@ -213,7 +213,7 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
             elif "risk" in tool_name.lower() or "var" in tool_name.lower():
                 return self.create_a2a_output(
                     status="working",
-                    text_content=f"⚠️ 리스크 평가 중: {tool_name}",
+                    text_content=f"️ 리스크 평가 중: {tool_name}",
                     stream_event=True,
                     metadata={
                         "event_type": "tool_start",
@@ -224,7 +224,7 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
             elif "portfolio" in tool_name.lower():
                 return self.create_a2a_output(
                     status="working",
-                    text_content=f"💼 포트폴리오 분석 중: {tool_name}",
+                    text_content=f" 포트폴리오 분석 중: {tool_name}",
                     stream_event=True,
                     metadata={
                         "event_type": "tool_start",
@@ -249,7 +249,7 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
                         self.requires_approval = True
                         return self.create_a2a_output(
                             status="working",
-                            text_content=f"⚠️ 높은 리스크 감지 (VaR: {var_ratio:.2%}). 승인이 필요합니다.",
+                            text_content=f"️ 높은 리스크 감지 (VaR: {var_ratio:.2%}). 승인이 필요합니다.",
                             data_content={
                                 "risk_assessment": tool_output,
                                 "requires_approval": True
@@ -409,11 +409,11 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
         total_amount = sum(order.get("amount", 0) for order in self.pending_orders)
         var_ratio = self.risk_metrics["var_ratio"]
 
-        message = "🔔 **거래 승인 요청**\n\n"
-        message += f"📊 주문 개수: {len(self.pending_orders)}개\n"
-        message += f"💰 총 거래 금액: {total_amount:,.0f}원\n"
-        message += f"⚠️ VaR 비율: {var_ratio:.2%}\n"
-        message += f"📈 리스크 수준: {self._determine_risk_level()}\n\n"
+        message = " **거래 승인 요청**\n\n"
+        message += f" 주문 개수: {len(self.pending_orders)}개\n"
+        message += f" 총 거래 금액: {total_amount:,.0f}원\n"
+        message += f"️ VaR 비율: {var_ratio:.2%}\n"
+        message += f" 리스크 수준: {self._determine_risk_level()}\n\n"
 
         message += "**주문 내역:**\n"
         for i, order in enumerate(self.pending_orders, 1):
@@ -453,7 +453,7 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
 
             return self.create_a2a_output(
                 status="completed",
-                text_content="✅ 거래가 승인되어 실행되었습니다.",
+                text_content=" 거래가 승인되어 실행되었습니다.",
                 data_content={
                     "approval_status": "APPROVED",
                     "executed_trades": self.executed_trades
@@ -465,7 +465,7 @@ class TradingA2AAgent(BaseA2AAgent, BaseGraphAgent):
             self.approval_status = "REJECTED"
             return self.create_a2a_output(
                 status="completed",
-                text_content="❌ 거래가 거부되었습니다.",
+                text_content=" 거래가 거부되었습니다.",
                 data_content={
                     "approval_status": "REJECTED",
                     "cancelled_orders": self.pending_orders

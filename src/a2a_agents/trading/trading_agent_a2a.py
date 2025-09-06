@@ -136,9 +136,9 @@ def main():
         try:
             _a2a_wrapper = TradingAgentA2A(is_debug=True)
             if not await _a2a_wrapper.initialize():
-                logger.error("❌ TradingAgentA2A 초기화 실패")
+                logger.error(" TradingAgentA2A 초기화 실패")
                 return None
-            logger.info("✅ TradingAgentA2A 초기화 완료")
+            logger.info(" TradingAgentA2A 초기화 완료")
             return _a2a_wrapper
         except Exception as e:
             logger.error(f"초기화 중 오류 발생: {e}", exc_info=True)
@@ -168,7 +168,7 @@ def main():
         # CORS가 적용된 앱 생성
         app = create_cors_enabled_app(server_app)
 
-        logger.info(f"✅ TradingAgent A2A server starting at {url} with CORS enabled")
+        logger.info(f" TradingAgent A2A server starting at {url} with CORS enabled")
         logger.info(f"Agent Card URL: {url}/.well-known/agent-card.json")
 
         # uvicorn 서버 직접 실행

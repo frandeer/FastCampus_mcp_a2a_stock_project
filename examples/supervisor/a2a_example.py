@@ -122,8 +122,8 @@ async def call_individual_agent(agent_type: str, query: str) -> Dict[str, Any]:
         
     input_data = {"messages": [{"role": "user", "content": query}]}
     
-    print(f"📞 {agent_type} 에이전트 직접 호출: {agent_url}")
-    print(f"   📝 요청: {query}")
+    print(f" {agent_type} 에이전트 직접 호출: {agent_url}")
+    print(f"    요청: {query}")
     
     async with A2AClientManagerV2(
         base_url=agent_url,
@@ -132,7 +132,7 @@ async def call_individual_agent(agent_type: str, query: str) -> Dict[str, Any]:
         max_retries=3
     ) as client_manager:
         result = await client_manager.send_data(input_data)
-        print(f"✅ {agent_type} 응답 크기: {len(str(result))} 문자")
+        print(f" {agent_type} 응답 크기: {len(str(result))} 문자")
         return result
 
 
@@ -263,11 +263,11 @@ async def test_individual_agent_calls() -> SupervisorIntegrationTestResult:
             
             if agent_passed:
                 passed_agents += 1
-                print(f"   ✅ {agent_type} 테스트 통과 (품질 점수: {validation['data_quality_score']:.2f})")
-                print(f"      💡 발견된 키워드: {validation['content_indicators'][:5]}")
+                print(f"    {agent_type} 테스트 통과 (품질 점수: {validation['data_quality_score']:.2f})")
+                print(f"       발견된 키워드: {validation['content_indicators'][:5]}")
             else:
-                print(f"   ❌ {agent_type} 테스트 실패")
-                print(f"      ⚠️  문제점: {validation['issues']}")
+                print(f"    {agent_type} 테스트 실패")
+                print(f"      ️  문제점: {validation['issues']}")
                 test_result.passed = False
                 
             test_result.add_sub_test(
@@ -281,7 +281,7 @@ async def test_individual_agent_calls() -> SupervisorIntegrationTestResult:
             )
             
         except Exception as e:
-            print(f"   ❌ {agent_type} 호출 오류: {str(e)}")
+            print(f"    {agent_type} 호출 오류: {str(e)}")
             test_result.passed = False
             test_result.add_sub_test(f"{agent_type} 직접 호출", False, str(e))
     
@@ -339,7 +339,7 @@ async def test_workflow_patterns() -> SupervisorIntegrationTestResult:
     for test_case in test_cases:
         try:
             print(f"\n🧪 {test_case['name']} 테스트 중...")
-            print(f"   📝 요청: {test_case['request']}")
+            print(f"    요청: {test_case['request']}")
             
             # SupervisorAgent 호출
             response_data = await call_supervisor_via_a2a(test_case['request'])
@@ -355,9 +355,9 @@ async def test_workflow_patterns() -> SupervisorIntegrationTestResult:
             
             if test_passed:
                 passed_tests += 1
-                print(f"   ✅ {test_case['name']} 성공")
+                print(f"    {test_case['name']} 성공")
             else:
-                print(f"   ❌ {test_case['name']} 실패")
+                print(f"    {test_case['name']} 실패")
                 test_result.passed = False
             
             test_result.add_sub_test(
@@ -371,7 +371,7 @@ async def test_workflow_patterns() -> SupervisorIntegrationTestResult:
             )
             
         except Exception as e:
-            print(f"   ❌ {test_case['name']} 오류: {str(e)}")
+            print(f"    {test_case['name']} 오류: {str(e)}")
             test_result.passed = False
             test_result.add_sub_test(test_case['name'], False, str(e))
     
@@ -407,7 +407,7 @@ async def test_sub_agent_orchestration() -> SupervisorIntegrationTestResult:
     
     try:
         print(f"\n🤝 서브 에이전트 협조 테스트 중...")
-        print(f"   📝 복합 요청: {complex_request}")
+        print(f"    복합 요청: {complex_request}")
         
         # SupervisorAgent 호출
         response_data = await call_supervisor_via_a2a(complex_request)
@@ -427,9 +427,9 @@ async def test_sub_agent_orchestration() -> SupervisorIntegrationTestResult:
         total_checks = len(coordination_checks)
         
         if passed_checks >= 3:  # 최소 3개 이상의 검증 통과
-            print(f"   ✅ 서브 에이전트 협조 성공 ({passed_checks}/{total_checks})")
+            print(f"    서브 에이전트 협조 성공 ({passed_checks}/{total_checks})")
         else:
-            print(f"   ❌ 서브 에이전트 협조 부족 ({passed_checks}/{total_checks})")
+            print(f"    서브 에이전트 협조 부족 ({passed_checks}/{total_checks})")
             test_result.passed = False
         
         test_result.add_sub_test(
@@ -443,7 +443,7 @@ async def test_sub_agent_orchestration() -> SupervisorIntegrationTestResult:
         )
         
     except Exception as e:
-        print(f"   ❌ 서브 에이전트 협조 테스트 오류: {str(e)}")
+        print(f"    서브 에이전트 협조 테스트 오류: {str(e)}")
         test_result.passed = False
         test_result.error_message = str(e)
     
@@ -497,8 +497,8 @@ async def test_decision_making_logic() -> SupervisorIntegrationTestResult:
     
     for scenario in decision_scenarios:
         try:
-            print(f"\n🎯 {scenario['name']} 의사결정 테스트 중...")
-            print(f"   📝 요청: {scenario['request']}")
+            print(f"\n {scenario['name']} 의사결정 테스트 중...")
+            print(f"    요청: {scenario['request']}")
             
             # SupervisorAgent 호출
             response_data = await call_supervisor_via_a2a(scenario['request'])
@@ -514,9 +514,9 @@ async def test_decision_making_logic() -> SupervisorIntegrationTestResult:
             
             if decision_quality:
                 passed_decisions += 1
-                print(f"   ✅ {scenario['name']} 의사결정 성공")
+                print(f"    {scenario['name']} 의사결정 성공")
             else:
-                print(f"   ❌ {scenario['name']} 의사결정 부족")
+                print(f"    {scenario['name']} 의사결정 부족")
                 test_result.passed = False
             
             test_result.add_sub_test(
@@ -530,7 +530,7 @@ async def test_decision_making_logic() -> SupervisorIntegrationTestResult:
             )
             
         except Exception as e:
-            print(f"   ❌ {scenario['name']} 의사결정 오류: {str(e)}")
+            print(f"    {scenario['name']} 의사결정 오류: {str(e)}")
             test_result.passed = False
             test_result.add_sub_test(scenario['name'], False, str(e))
     
@@ -587,15 +587,15 @@ async def test_multi_turn_conversation() -> SupervisorIntegrationTestResult:
         turns = scenario["turns"]
         
         try:
-            print(f"\n💬 멀티턴 대화 시나리오: {scenario_name}")
-            print(f"   📝 총 {len(turns)}턴의 대화 진행")
+            print(f"\n 멀티턴 대화 시나리오: {scenario_name}")
+            print(f"    총 {len(turns)}턴의 대화 진행")
             
             conversation_history = []
             turn_results = []
             scenario_passed = True
             
             for turn_num, user_input in enumerate(turns, 1):
-                print(f"\n   🔄 턴 {turn_num}: {user_input}")
+                print(f"\n    턴 {turn_num}: {user_input}")
                 
                 try:
                     # SupervisorAgent 호출 (컨텍스트 유지를 위해 동일한 클라이언트 사용)
@@ -626,13 +626,13 @@ async def test_multi_turn_conversation() -> SupervisorIntegrationTestResult:
                     )
                     
                     if turn_passed:
-                        print(f"      ✅ 턴 {turn_num} 성공 (품질 점수: {validation['data_quality_score']:.2f})")
+                        print(f"       턴 {turn_num} 성공 (품질 점수: {validation['data_quality_score']:.2f})")
                     else:
-                        print(f"      ❌ 턴 {turn_num} 실패")
+                        print(f"       턴 {turn_num} 실패")
                         scenario_passed = False
                         
                 except Exception as e:
-                    print(f"      ❌ 턴 {turn_num} 오류: {str(e)}")
+                    print(f"       턴 {turn_num} 오류: {str(e)}")
                     scenario_passed = False
                     turn_results.append({
                         "turn": turn_num,
@@ -651,12 +651,12 @@ async def test_multi_turn_conversation() -> SupervisorIntegrationTestResult:
                 
                 if consistency_check:
                     passed_scenarios += 1
-                    print(f"   ✅ {scenario_name} 시나리오 전체 성공")
+                    print(f"    {scenario_name} 시나리오 전체 성공")
                 else:
-                    print(f"   ⚠️  {scenario_name} 시나리오 일관성 부족")
+                    print(f"   ️  {scenario_name} 시나리오 일관성 부족")
                     scenario_passed = False
             else:
-                print(f"   ❌ {scenario_name} 시나리오 실패")
+                print(f"    {scenario_name} 시나리오 실패")
                 
             test_result.add_sub_test(
                 scenario_name,
@@ -670,7 +670,7 @@ async def test_multi_turn_conversation() -> SupervisorIntegrationTestResult:
             )
             
         except Exception as e:
-            print(f"   ❌ {scenario_name} 시나리오 오류: {str(e)}")
+            print(f"    {scenario_name} 시나리오 오류: {str(e)}")
             test_result.passed = False
             test_result.add_sub_test(scenario_name, False, str(e))
     
@@ -731,9 +731,9 @@ async def test_workflow_chain_analysis() -> SupervisorIntegrationTestResult:
         workflow_name = workflow_case["name"]
         
         try:
-            print(f"\n🔗 워크플로우 체인 분석: {workflow_name}")
-            print(f"   📝 요청: {workflow_case['query']}")
-            print(f"   🎯 예상 패턴: {workflow_case['expected_pattern']}")
+            print(f"\n 워크플로우 체인 분석: {workflow_name}")
+            print(f"    요청: {workflow_case['query']}")
+            print(f"    예상 패턴: {workflow_case['expected_pattern']}")
             
             # SupervisorAgent 호출
             response_data = await call_supervisor_via_a2a(workflow_case['query'])
@@ -770,15 +770,15 @@ async def test_workflow_chain_analysis() -> SupervisorIntegrationTestResult:
             
             if workflow_passed:
                 passed_workflows += 1
-                print(f"   ✅ {workflow_name} 성공")
-                print(f"      📊 에이전트 커버리지: {agent_coverage:.1%}")
-                print(f"      📈 단계 커버리지: {step_coverage:.1%}")
-                print(f"      💡 호출된 에이전트: {agents_called}")
+                print(f"    {workflow_name} 성공")
+                print(f"       에이전트 커버리지: {agent_coverage:.1%}")
+                print(f"       단계 커버리지: {step_coverage:.1%}")
+                print(f"       호출된 에이전트: {agents_called}")
             else:
-                print(f"   ❌ {workflow_name} 실패")
-                print(f"      ⚠️  패턴 감지: {'✅' if pattern_detected else '❌'}")
-                print(f"      ⚠️  에이전트 커버리지: {agent_coverage:.1%}")
-                print(f"      ⚠️  단계 커버리지: {step_coverage:.1%}")
+                print(f"    {workflow_name} 실패")
+                print(f"      ️  패턴 감지: {'' if pattern_detected else ''}")
+                print(f"      ️  에이전트 커버리지: {agent_coverage:.1%}")
+                print(f"      ️  단계 커버리지: {step_coverage:.1%}")
                 test_result.passed = False
             
             test_result.add_sub_test(
@@ -799,7 +799,7 @@ async def test_workflow_chain_analysis() -> SupervisorIntegrationTestResult:
             )
             
         except Exception as e:
-            print(f"   ❌ {workflow_name} 오류: {str(e)}")
+            print(f"    {workflow_name} 오류: {str(e)}")
             test_result.passed = False
             test_result.add_sub_test(workflow_name, False, str(e))
     
@@ -851,8 +851,8 @@ async def test_error_handling_and_resilience() -> SupervisorIntegrationTestResul
         test_name = error_case["name"]
         
         try:
-            print(f"\n🛡️ 에러 처리 테스트: {test_name}")
-            print(f"   📝 요청: '{error_case['query']}'")
+            print(f"\n️ 에러 처리 테스트: {test_name}")
+            print(f"    요청: '{error_case['query']}'")
             
             # SupervisorAgent 호출 (에러 상황)
             response_data = await call_supervisor_via_a2a(error_case['query'])
@@ -870,13 +870,13 @@ async def test_error_handling_and_resilience() -> SupervisorIntegrationTestResul
             
             if error_test_passed:
                 passed_error_tests += 1
-                print(f"   ✅ {test_name} 성공: 우아한 에러 처리")
-                print(f"      💡 발견된 에러 처리 지표: {[ind for ind in error_indicators if ind in response_str][:3]}")
+                print(f"    {test_name} 성공: 우아한 에러 처리")
+                print(f"       발견된 에러 처리 지표: {[ind for ind in error_indicators if ind in response_str][:3]}")
             else:
-                print(f"   ❌ {test_name} 실패")
-                print(f"      ⚠️  우아한 처리: {'✅' if graceful_handling else '❌'}")
-                print(f"      ⚠️  응답 존재: {'✅' if has_response else '❌'}")
-                print(f"      ⚠️  시스템 안정성: {'✅' if not_crashed else '❌'}")
+                print(f"    {test_name} 실패")
+                print(f"      ️  우아한 처리: {'' if graceful_handling else ''}")
+                print(f"      ️  응답 존재: {'' if has_response else ''}")
+                print(f"      ️  시스템 안정성: {'' if not_crashed else ''}")
                 test_result.passed = False
             
             test_result.add_sub_test(
@@ -894,7 +894,7 @@ async def test_error_handling_and_resilience() -> SupervisorIntegrationTestResul
             
         except Exception as e:
             # 예외 발생도 어느 정도는 예상되는 상황
-            print(f"   ⚠️  {test_name} 예외 발생: {str(e)}")
+            print(f"   ️  {test_name} 예외 발생: {str(e)}")
             # 완전한 시스템 크래시가 아니라면 부분 점수
             if "timeout" not in str(e).lower():
                 test_result.add_sub_test(test_name, True, f"예상된 예외: {str(e)}")
@@ -950,11 +950,11 @@ async def test_performance_and_stability() -> SupervisorIntegrationTestResult:
         test_name = perf_case["name"]
         
         try:
-            print(f"\n⚡ 성능 테스트: {test_name}")
+            print(f"\n 성능 테스트: {test_name}")
             
             if perf_case["name"] == "동시 요청 처리":
                 # 동시 요청 테스트
-                print(f"   📝 동시 요청 {perf_case['concurrent_requests']}개 전송")
+                print(f"    동시 요청 {perf_case['concurrent_requests']}개 전송")
                 
                 start_concurrent = time.time()
                 tasks = []
@@ -972,9 +972,9 @@ async def test_performance_and_stability() -> SupervisorIntegrationTestResult:
                 
                 if concurrency_success:
                     passed_performance_tests += 1
-                    print(f"   ✅ {test_name} 성공: {successful_responses}/{perf_case['concurrent_requests']} 응답 ({concurrent_time:.0f}ms)")
+                    print(f"    {test_name} 성공: {successful_responses}/{perf_case['concurrent_requests']} 응답 ({concurrent_time:.0f}ms)")
                 else:
-                    print(f"   ❌ {test_name} 실패: {successful_responses}/{perf_case['concurrent_requests']} 응답")
+                    print(f"    {test_name} 실패: {successful_responses}/{perf_case['concurrent_requests']} 응답")
                     test_result.passed = False
                 
                 test_result.add_sub_test(
@@ -990,7 +990,7 @@ async def test_performance_and_stability() -> SupervisorIntegrationTestResult:
                 
             else:
                 # 단일 요청 성능 테스트
-                print(f"   📝 요청: {perf_case['query']}")
+                print(f"    요청: {perf_case['query']}")
                 print(f"   ⏱️  제한 시간: {perf_case['max_response_time_ms']}ms")
                 
                 request_start = time.time()
@@ -1006,9 +1006,9 @@ async def test_performance_and_stability() -> SupervisorIntegrationTestResult:
                 
                 if performance_ok:
                     passed_performance_tests += 1
-                    print(f"   ✅ {test_name} 성공: {response_time:.0f}ms (기준: {perf_case['max_response_time_ms']}ms)")
+                    print(f"    {test_name} 성공: {response_time:.0f}ms (기준: {perf_case['max_response_time_ms']}ms)")
                 else:
-                    print(f"   ❌ {test_name} 실패: {response_time:.0f}ms (기준 초과)")
+                    print(f"    {test_name} 실패: {response_time:.0f}ms (기준 초과)")
                     test_result.passed = False
                 
                 test_result.add_sub_test(
@@ -1024,7 +1024,7 @@ async def test_performance_and_stability() -> SupervisorIntegrationTestResult:
                 )
                 
         except Exception as e:
-            print(f"   ❌ {test_name} 오류: {str(e)}")
+            print(f"    {test_name} 오류: {str(e)}")
             test_result.passed = False
             test_result.add_sub_test(test_name, False, str(e))
     
@@ -1091,9 +1091,9 @@ async def test_real_world_scenarios() -> SupervisorIntegrationTestResult:
         scenario_name = scenario["name"]
         
         try:
-            print(f"\n🌍 실제 시나리오 테스트: {scenario_name}")
-            print(f"   📝 사용자 문의: {scenario['query']}")
-            print(f"   🎯 예상 워크플로우: {scenario['expected_workflow']}")
+            print(f"\n 실제 시나리오 테스트: {scenario_name}")
+            print(f"    사용자 문의: {scenario['query']}")
+            print(f"    예상 워크플로우: {scenario['expected_workflow']}")
             
             # SupervisorAgent 호출
             response_data = await call_supervisor_via_a2a(scenario['query'])
@@ -1123,13 +1123,13 @@ async def test_real_world_scenarios() -> SupervisorIntegrationTestResult:
             
             if scenario_success:
                 passed_scenarios += 1
-                print(f"   ✅ {scenario_name} 성공")
-                print(f"      📊 컨텐츠 커버리지: {content_coverage:.1%}")
-                print(f"      💡 매칭된 키워드: {content_matches}")
+                print(f"    {scenario_name} 성공")
+                print(f"       컨텐츠 커버리지: {content_coverage:.1%}")
+                print(f"       매칭된 키워드: {content_matches}")
             else:
-                print(f"   ❌ {scenario_name} 실패")
-                print(f"      ⚠️  컨텐츠 커버리지: {content_coverage:.1%}")
-                print(f"      ⚠️  응답 길이: {response_length} 문자")
+                print(f"    {scenario_name} 실패")
+                print(f"      ️  컨텐츠 커버리지: {content_coverage:.1%}")
+                print(f"      ️  응답 길이: {response_length} 문자")
                 test_result.passed = False
             
             test_result.add_sub_test(
@@ -1147,7 +1147,7 @@ async def test_real_world_scenarios() -> SupervisorIntegrationTestResult:
             )
             
         except Exception as e:
-            print(f"   ❌ {scenario_name} 오류: {str(e)}")
+            print(f"    {scenario_name} 오류: {str(e)}")
             test_result.passed = False
             test_result.add_sub_test(scenario_name, False, str(e))
     
@@ -1172,17 +1172,17 @@ async def run_supervisor_integration_tests() -> List[SupervisorIntegrationTestRe
     
     try:
         # 1. 개별 A2A 에이전트 직접 호출 테스트
-        print(f"\n{'📞 테스트 1: 개별 A2A 에이전트 직접 호출':-^60}")
+        print(f"\n{' 테스트 1: 개별 A2A 에이전트 직접 호출':-^60}")
         individual_result = await test_individual_agent_calls()
         test_results.append(individual_result)
         
         # 2. 워크플로우 패턴 테스트
-        print(f"\n{'🎯 테스트 2: 워크플로우 패턴':-^60}")
+        print(f"\n{' 테스트 2: 워크플로우 패턴':-^60}")
         workflow_result = await test_workflow_patterns()
         test_results.append(workflow_result)
         
         # 3. 워크플로우 체인 상세 분석 테스트
-        print(f"\n{'🔗 테스트 3: 워크플로우 체인 상세 분석':-^60}")
+        print(f"\n{' 테스트 3: 워크플로우 체인 상세 분석':-^60}")
         chain_result = await test_workflow_chain_analysis()
         test_results.append(chain_result)
         
@@ -1192,45 +1192,45 @@ async def run_supervisor_integration_tests() -> List[SupervisorIntegrationTestRe
         test_results.append(orchestration_result)
         
         # 5. 멀티턴 대화 시나리오 테스트
-        print(f"\n{'💬 테스트 5: 멀티턴 대화 시나리오':-^60}")
+        print(f"\n{' 테스트 5: 멀티턴 대화 시나리오':-^60}")
         multiturn_result = await test_multi_turn_conversation()
         test_results.append(multiturn_result)
         
         # 6. 의사결정 로직 테스트
-        print(f"\n{'🎯 테스트 6: 의사결정 로직':-^60}")
+        print(f"\n{' 테스트 6: 의사결정 로직':-^60}")
         decision_result = await test_decision_making_logic()
         test_results.append(decision_result)
         
         # 7. 에러 처리 및 복원력 테스트
-        print(f"\n{'🛡️ 테스트 7: 에러 처리 및 복원력':-^60}")
+        print(f"\n{'️ 테스트 7: 에러 처리 및 복원력':-^60}")
         error_result = await test_error_handling_and_resilience()
         test_results.append(error_result)
         
         # 8. 실제 사용 시나리오 기반 테스트
-        print(f"\n{'🌍 테스트 8: 실제 사용 시나리오':-^60}")
+        print(f"\n{' 테스트 8: 실제 사용 시나리오':-^60}")
         realworld_result = await test_real_world_scenarios()
         test_results.append(realworld_result)
         
         # 9. 성능 및 안정성 검증 테스트
-        print(f"\n{'⚡ 테스트 9: 성능 및 안정성 검증':-^60}")
+        print(f"\n{' 테스트 9: 성능 및 안정성 검증':-^60}")
         performance_result = await test_performance_and_stability()
         test_results.append(performance_result)
         
         # 결과 요약
-        print(f"\n{'📊 테스트 결과 요약':-^60}")
+        print(f"\n{' 테스트 결과 요약':-^60}")
         passed_tests = sum(1 for result in test_results if result.passed)
         total_tests = len(test_results)
         
         for result in test_results:
-            status = "✅ PASS" if result.passed else "❌ FAIL"
+            status = " PASS" if result.passed else " FAIL"
             print(f"   {status} {result.test_name} ({result.execution_time_ms:.0f}ms)")
             
             if result.sub_tests:
                 for sub_test in result.sub_tests:
-                    sub_status = "✅" if sub_test["passed"] else "❌"
+                    sub_status = "" if sub_test["passed"] else ""
                     print(f"      {sub_status} {sub_test['name']}")
         
-        print(f"\n📈 전체 성공률: {passed_tests}/{total_tests} ({(passed_tests/total_tests)*100:.1f}%)")
+        print(f"\n 전체 성공률: {passed_tests}/{total_tests} ({(passed_tests/total_tests)*100:.1f}%)")
         
         # 상세 결과를 JSON 파일로 저장
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1261,10 +1261,10 @@ async def run_supervisor_integration_tests() -> List[SupervisorIntegrationTestRe
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(detailed_results, f, ensure_ascii=False, indent=2)
         
-        print(f"\n💾 상세 테스트 결과가 {output_file}에 저장되었습니다.")
+        print(f"\n 상세 테스트 결과가 {output_file}에 저장되었습니다.")
         
     except Exception as e:
-        print(f"\n❌ 통합 테스트 실행 중 오류 발생: {str(e)}")
+        print(f"\n 통합 테스트 실행 중 오류 발생: {str(e)}")
         import traceback
         print(f"상세 오류: {traceback.format_exc()}")
     
@@ -1282,8 +1282,8 @@ async def call_supervisor_via_a2a(user_request: str) -> Dict[str, Any]:
         "messages": [{"content": user_request, "role": "user"}]
     }
 
-    print("\n📤 SupervisorAgent 요청 전송:")
-    print(f"   📝 사용자 요청: '{user_request}'")
+    print("\n SupervisorAgent 요청 전송:")
+    print(f"    사용자 요청: '{user_request}'")
 
     async with A2AClientManagerV2(
         base_url=supervisor_url,
@@ -1293,7 +1293,7 @@ async def call_supervisor_via_a2a(user_request: str) -> Dict[str, Any]:
         try:
             response_data = await client_manager.send_data(input_data)
             logger.info(f"response_data: {response_data}")
-            print("\n📥 SupervisorAgent 응답 수신:")
+            print("\n SupervisorAgent 응답 수신:")
             print(f"   {json.dumps(response_data, ensure_ascii=False, indent=2)}")
 
             # JSON 파일로 저장
@@ -1305,12 +1305,12 @@ async def call_supervisor_via_a2a(user_request: str) -> Dict[str, Any]:
             with open(output_file, "w", encoding="utf-8") as f:
                 json.dump(response_data, f, ensure_ascii=False, indent=2)
 
-            print(f"\n💾 전체 결과가 {output_file}에 저장되었습니다.")
+            print(f"\n 전체 결과가 {output_file}에 저장되었습니다.")
 
             return response_data
 
         except Exception as e:
-            print(f"❌ A2A 호출 실패: {str(e)}")
+            print(f" A2A 호출 실패: {str(e)}")
             raise
 
 
@@ -1323,18 +1323,18 @@ async def test_custom_supervisor_a2a():
 
     try:
         # A2A를 통한 SupervisorAgent 호출
-        print("🚀 A2A 프로토콜을 통해 CustomSupervisorAgent 실행 중...")
+        print(" A2A 프로토콜을 통해 CustomSupervisorAgent 실행 중...")
         await call_supervisor_via_a2a("삼성전자 현재 주가를 조회하고, 매수가 적절한지 분석한 뒤에 평가하고 실제 매도를 시장가로 시도해주세요.")
 
     except Exception as e:
-        print(f"\n❌ 실행 중 오류 발생: {str(e)}")
+        print(f"\n 실행 중 오류 발생: {str(e)}")
         import traceback
         print(f"상세 오류: {traceback.format_exc()}")
 
 
 async def main():
     """메인 실행 함수"""
-    print("🎯 A2A 프로토콜을 통한 SupervisorAgent 워크플로우 검증")
+    print(" A2A 프로토콜을 통한 SupervisorAgent 워크플로우 검증")
     print("🤝 하위 에이전트들과의 협업 패턴 테스트")
 
     # 기본 SupervisorAgent 테스트
@@ -1344,20 +1344,20 @@ async def main():
     # integration_results = await run_supervisor_integration_tests()
     
     # # 전체 결과 요약
-    # print(f"\n{'🏁 최종 테스트 결과':-^70}")
+    # print(f"\n{' 최종 테스트 결과':-^70}")
     # total_integration_tests = len(integration_results)
     # passed_integration_tests = sum(1 for result in integration_results if result.passed)
     
     # if total_integration_tests > 0:
     #     success_rate = (passed_integration_tests / total_integration_tests) * 100
-    #     print(f"   📊 통합 테스트: {passed_integration_tests}/{total_integration_tests} ({success_rate:.1f}%)")
+    #     print(f"    통합 테스트: {passed_integration_tests}/{total_integration_tests} ({success_rate:.1f}%)")
         
     #     if success_rate >= 80:
-    #         print("   🎉 SupervisorAgent A2A 통합이 성공적으로 검증되었습니다!")
+    #         print("    SupervisorAgent A2A 통합이 성공적으로 검증되었습니다!")
     #     else:
-    #         print("   ⚠️  SupervisorAgent A2A 통합에 개선이 필요합니다.")
+    #         print("   ️  SupervisorAgent A2A 통합에 개선이 필요합니다.")
     
-    # print(f"   📁 상세 결과는 logs/examples/a2a/ 디렉토리에서 확인하세요.")
+    # print(f"    상세 결과는 logs/examples/a2a/ 디렉토리에서 확인하세요.")
 
 
 if __name__ == "__main__":

@@ -2,21 +2,21 @@
 
 AI 기반 주식 투자 자동화 시스템의 전체 소스코드 구조를 제공하는 최상위 인덱스 문서입니다.
 
-## 📋 Breadcrumb
+## Breadcrumb
 
 - 프로젝트 루트: [README.md](../README.md)
 - **현재 위치**: `src/` - 전체 소스코드 루트
 
-## 🗂️ 하위 디렉토리 코드 인덱스
+## 하위 디렉토리 코드 인덱스
 
-- [🤖 lg_agents](lg_agents/code_index.md) - **LangGraph 기반 핵심 에이전트** (4개 핵심 Agent)
-- [🔧 mcp_servers](mcp_servers/code_index.md) - **MCP 서버 구현체** (8개 도메인 서버)
-- [🌐 a2a_integration](a2a_integration/code_index.md) - **A2A-LangGraph 통합 레이어**
-- [📡 a2a_agents](a2a_agents/code_index.md) - **A2A 프로토콜 기반 에이전트**
+- [lg_agents](lg_agents/code_index.md) - **LangGraph 기반 핵심 에이전트** (4개 핵심 Agent)
+- [mcp_servers](mcp_servers/code_index.md) - **MCP 서버 구현체** (8개 도메인 서버)
+- [a2a_integration](a2a_integration/code_index.md) - **A2A-LangGraph 통합 레이어**
+- [a2a_agents](a2a_agents/code_index.md) - **A2A 프로토콜 기반 에이전트**
 
-## 📁 디렉토리 트리
+## 디렉토리 트리
 
-```text
+```bash
 src/
 ├── __init__.py                    # 패키지 초기화
 ├── code_index.md                  # 이 문서 - 전체 구조 인덱스
@@ -206,33 +206,37 @@ graph TB
     LG_Agents --> MCP_Servers
 ```
 
-### 🤖 Core LangGraph Agents (Layer 2)
+### Core LangGraph Agents (Layer 2)
 
 #### 1. **SupervisorAgent** (`supervisor_agent.py`)
+
 - **역할**: 사용자 요청 분석, 워크플로우 계획, Agent 조정
 - **주요 클래스**: `SupervisorAgent`, `SendSupervisorState`, `WorkflowPattern`
 - **워크플로우**: 10-노드 오케스트레이션 파이프라인
 - **특징**: LLM 기반 요청 파싱, 순차/병렬 실행 전략, Human 리뷰 조건 판단
 
 #### 2. **DataCollectorAgent** (`data_collector_agent.py`)
+
 - **역할**: 멀티소스 데이터 수집, 품질 검증, 표준화
 - **주요 클래스**: `DataCollectorAgent`
 - **워크플로우**: 8-노드 데이터 파이프라인 (수집→검증→통합→품질평가)
 - **특징**: 5개 도메인 MCP 서버 통합, 데이터 품질 점수(0.0~1.0) 계산
 
 #### 3. **AnalysisAgent** (`analysis_agent.py`)
+
 - **역할**: Technical, Fundamental, Macro, Sentiment 통합 분석
 - **주요 클래스**: `AnalysisAgent`
 - **워크플로우**: 9-노드 분석 파이프라인 (개별분석→통합→권장사항)
 - **특징**: 카테고리 기반 신호 시스템, 가중평균 통합, 신뢰도 계산
 
 #### 4. **TradingAgent** (`trading_agent.py`)
+
 - **역할**: 전략 수립, 포트폴리오 최적화, 리스크 평가, 주문 실행
 - **주요 클래스**: `TradingAgent`
 - **워크플로우**: 9-노드 거래 파이프라인 (전략→최적화→리스크→승인→실행)
 - **특징**: VaR 기반 리스크 평가, Human 승인 조건부 라우팅, 실시간 모니터링
 
-### 🔧 MCP Server Ecosystem (Layer 1)
+### MCP Server Ecosystem (Layer 1)
 
 #### **5개 키움증권 도메인 서버** (`kiwoom_mcp/domains/`)
 
@@ -254,9 +258,10 @@ graph TB
 | `stock_analysis_mcp` | - | 기술적 분석 지표 계산 |
 | `macroeconomic_analysis_mcp` | - | 거시경제 지표 분석 |
 
-### 🌐 A2A Integration Layer (Layer 3)
+### A2A Integration Layer (Layer 3)
 
 #### 핵심 컴포넌트
+
 - **`executor.py`**: LangGraphAgentExecutor - A2A와 LangGraph 연결
 - **`generic_executor.py`**: 범용 실행기 구현
 - **`models.py`**: LangGraphExecutorConfig 설정 모델
@@ -264,13 +269,15 @@ graph TB
 - **`a2a_lg_utils.py`**: 서버 빌드, 에이전트 카드 생성
 
 #### 리팩토링 성과
+
 - **Before**: 17개 파일, 5,709줄 (과도한 추상화)
 - **After**: 7개 파일, 2,090줄 (63% 감소)
 - **개선점**: SDK 직접 활용, 단순화된 구조, 성능 향상
 
-### 📡 A2A Agents Layer (Layer 4)
+### A2A Agents Layer (Layer 4)
 
 #### A2A 프로토콜 에이전트
+
 - **`supervisor_agent_a2a.py`**: 워크플로우 조정 A2A 래퍼
 - **`data_collector_agent_a2a.py`**: 데이터 수집 A2A 래퍼
 - **`analysis_agent_a2a.py`**: 분석 A2A 래퍼
@@ -278,7 +285,7 @@ graph TB
 
 각 A2A 에이전트는 대응하는 LangGraph 에이전트를 A2A 프로토콜로 래핑하여 외부 시스템과의 통신을 가능하게 합니다.
 
-### 🔄 Data Flow & Communication Patterns
+### Data Flow & Communication Patterns
 
 ```mermaid
 sequenceDiagram
@@ -318,21 +325,25 @@ sequenceDiagram
 ### 💫 Key Features & Innovations
 
 #### **1. Category-Based Analysis System**
+
 - **기존**: 수치 점수 기반 판단 (복잡, 해석 어려움)
 - **현재**: 카테고리 기반 신호 (STRONG_BUY|BUY|HOLD|SELL|STRONG_SELL)
 - **장점**: 명확한 의사결정, 프롬프트 간소화, 토큰 사용량 60% 감소
 
 #### **2. Human-in-the-Loop Approval**
+
 - **트리거**: 고위험 거래, VaR 임계치 초과, 신뢰도 낮음
 - **프로세스**: 리스크 분석 → 승인 요청 → Human 판단 → 실행/취소
 - **안전장치**: 타임아웃 처리, 자동 거부 조건, 감사 추적
 
 #### **3. Real MCP Server Integration**
+
 - **변경사항**: Mock 데이터 완전 제거 → 실제 MCP 서버 연동
 - **신뢰성**: Connection pooling, 오류 복구, Health check
 - **성능**: 비동기 처리, 캐싱, Rate limiting
 
 #### **4. Ultra-Detailed Documentation**
+
 - **Docstrings**: 모든 함수에 초상세 문서화 (목적, 입출력, 워크플로우 역할)
 - **Inline Comments**: 복잡한 로직에 라인별 상세 설명
 - **Communication Patterns**: Agent 간 통신 프로토콜 및 데이터 흐름 문서화
@@ -340,12 +351,14 @@ sequenceDiagram
 ### 🛠️ Code Quality & Standards
 
 #### **품질 개선 작업**
+
 - **Ruff Linting**: 40개 lint 오류 수정 완료
 - **Import Organization**: 모든 import 문 정렬 및 최적화
 - **Code Style**: 일관된 코딩 스타일 적용
 - **F-string Optimization**: 불필요한 f-string 제거
 
 #### **문서화 완성도**
+
 - **Ultra-detailed Docstrings**: 모든 핵심 함수 완료
 - **Complex Logic Comments**: 알고리즘 로직 상세 주석
 - **Architecture Documentation**: 시스템 설계 및 통신 패턴
@@ -366,6 +379,7 @@ sequenceDiagram
 ### 🔧 Configuration & Environment
 
 #### 필수 환경 변수
+
 ```bash
 # OpenAI API
 OPENAI_API_KEY=your-api-key
@@ -385,6 +399,7 @@ HUMAN_IN_LOOP_ENABLED=true
 ```
 
 #### MCP 서버 포트 매핑
+
 ```yaml
 trading_domain: 8030
 market_domain: 8031

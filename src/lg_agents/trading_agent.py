@@ -73,7 +73,7 @@ async def create_trading_agent(model=None, is_debug: bool = False):
             debug=is_debug,
         )
 
-        logger.info("✅ create_react_agent 기반 TradingAgent 생성 완료")
+        logger.info(" create_react_agent 기반 TradingAgent 생성 완료")
         return agent
 
     except Exception as e:
@@ -185,9 +185,9 @@ async def execute_trading(
             msg_list: list[dict] = convert_to_openai_messages(result["messages"])
             full_message_history.extend(msg_list)
 
-            logger.info(f"📝 create_react_agent 메시지 히스토리 구성 완료: {len(full_message_history)}개 메시지")
+            logger.info(f" create_react_agent 메시지 히스토리 구성 완료: {len(full_message_history)}개 메시지")
         except Exception as e:
-            logger.error(f"❌ create_react_agent 메시지 히스토리 구성 중 오류: {e}")
+            logger.error(f" create_react_agent 메시지 히스토리 구성 중 오류: {e}")
             full_message_history = []
 
         tool_calls_made = sum(

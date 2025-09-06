@@ -2,13 +2,13 @@
 
 A2A 프로토콜과 LangGraph를 연결하는 통합 레이어 모듈입니다. Agent-to-Agent 통신과 StateGraph 실행을 브리징합니다.
 
-## 📋 Breadcrumb
+## Breadcrumb
 
 - 프로젝트 루트: [README.md](../../README.md)
 - 상위로: [src](../code_index.md)
 - **현재 위치**: `src/a2a_integration/` - A2A-LangGraph 브리지
 
-## 🗂️ 하위 디렉토리 코드 인덱스
+## 하위 디렉토리 코드 인덱스
 
 - **[auth/](auth/)** - 인증 및 자격 증명 관리
 

@@ -207,22 +207,22 @@ async def load_trading_tools():
 # 테스트 함수
 async def test_mcp_connections():
     """모든 MCP 서버 연결 테스트"""
-    print("🔧 MCP 서버 연결 테스트 시작")
+    print(" MCP 서버 연결 테스트 시작")
 
     for agent_type in MCPServerConfig.AGENT_SERVER_GROUPS.keys():
         try:
-            print(f"\n📊 {agent_type} Agent용 도구 로딩 테스트...")
+            print(f"\n {agent_type} Agent용 도구 로딩 테스트...")
             tools = await load_tools_for_agent(agent_type)
-            print(f"  ✅ 성공: {len(tools)}개 도구 로딩됨")
+            print(f"   성공: {len(tools)}개 도구 로딩됨")
 
             # 도구 이름들 출력
             tool_names = [tool.name for tool in tools[:5]]  # 처음 5개만
-            print(f"  🛠️ 도구 예시: {tool_names}")
+            print(f"  ️ 도구 예시: {tool_names}")
 
         except Exception as e:
-            print(f"  ❌ 실패: {e}")
+            print(f"   실패: {e}")
 
-    print("\n✅ MCP 서버 연결 테스트 완료")
+    print("\n MCP 서버 연결 테스트 완료")
 
 
 if __name__ == "__main__":

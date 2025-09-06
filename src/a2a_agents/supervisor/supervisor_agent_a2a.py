@@ -27,7 +27,7 @@ from a2a.types import (
 )
 from a2a.utils import new_agent_parts_message, new_agent_text_message
 
-from src.a2a_integration.a2a_lg_client_utils_v2 import A2AClientManagerV2, DataResponse
+from src.a2a_integration.a2a_lg_client_utils_v2 import A2AClientManagerV2
 from src.a2a_integration.a2a_lg_utils import (
     build_a2a_starlette_application,
     build_request_handler,
@@ -77,7 +77,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                         "trading": os.getenv("TRADING_URL", "http://localhost:8003"),
                     }
 
-                logger.info(f"✅ SupervisorA2AAgent initialized with URLs: {self.agent_urls}")
+                logger.info(f" SupervisorA2AAgent initialized with URLs: {self.agent_urls}")
             except Exception as e:
                 logger.error(f"Failed to initialize SupervisorA2AAgent: {e}")
                 raise RuntimeError(f"Agent initialization failed: {e}") from e
@@ -99,7 +99,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
             user_query = self._extract_user_query(input_dict)
             workflow_pattern = self._determine_workflow_pattern(user_query)
 
-            logger.info(f"🎯 Workflow pattern determined: {workflow_pattern}")
+            logger.info(f" Workflow pattern determined: {workflow_pattern}")
 
             # TaskManager 초기화
             initial_message = new_agent_text_message(user_query)
@@ -165,7 +165,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 )
 
                 # 최종 완료 메시지 추가
-                completion_message = f"✅ {workflow_pattern} 워크플로우가 성공적으로 완료되었습니다."
+                completion_message = f" {workflow_pattern} 워크플로우가 성공적으로 완료되었습니다."
                 completion_message_obj = new_agent_text_message(str(completion_message), context_id=context_id, task_id=task_id)
                 task.history.append(completion_message_obj)
                 await self.task_store.save(task)
@@ -230,7 +230,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
 
         # 상태 조회 패턴들
         status_patterns = [
-            "상태조회:", "status:", "진행 상황", "현재 상태", 
+            "상태조회:", "status:", "진행 상황", "현재 상태",
             "task status", "workflow status", "진행상황"
         ]
 
@@ -255,7 +255,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
         if not task_id or task_id not in self.task_managers:
             return {
                 "status": "not_found",
-                "text_content": "⚠️ 현재 진행 중인 워크플로우가 없습니다. 새로운 요청을 시작해주세요.",
+                "text_content": "️ 현재 진행 중인 워크플로우가 없습니다. 새로운 요청을 시작해주세요.",
                 "data_content": {
                     "error": "No active workflow found",
                     "available_tasks": list(self.task_managers.keys()),
@@ -271,7 +271,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
         if not task:
             return {
                 "status": "not_found",
-                "text_content": "⚠️ Task를 찾을 수 없습니다.",
+                "text_content": "️ Task를 찾을 수 없습니다.",
                 "data_content": {"error": "Task not found"},
                 "final": True
             }
@@ -293,14 +293,14 @@ class CustomSupervisorAgentA2A(AgentExecutor):
 
         # 단계별 상태 메시지 매핑
         step_messages = {
-            "data_collection": "📊 데이터 수집 에이전트가 시장 정보를 수집하고 있습니다",
-            "analysis": "🔍 분석 에이전트가 투자 분석을 수행하고 있습니다",
-            "trading": "💹 거래 에이전트가 투자 전략을 수립하고 있습니다",
-            "initializing": "🎯 워크플로우를 초기화하고 있습니다"
+            "data_collection": " 데이터 수집 에이전트가 시장 정보를 수집하고 있습니다",
+            "analysis": " 분석 에이전트가 투자 분석을 수행하고 있습니다",
+            "trading": " 거래 에이전트가 투자 전략을 수립하고 있습니다",
+            "initializing": " 워크플로우를 초기화하고 있습니다"
         }
 
         current_message = step_messages.get(
-            current_step, 
+            current_step,
             f"워크플로우 진행 중: {current_step}"
         )
 
@@ -376,7 +376,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
 
             # Task 업데이트 메시지
             message = new_agent_text_message(
-                "📊 [데이터 수집 에이전트] 시장 데이터, 뉴스, 투자자 동향 수집을 시작합니다."
+                " [데이터 수집 에이전트] 시장 데이터, 뉴스, 투자자 동향 수집을 시작합니다."
             )
             task.history.append(message)
             await self.task_store.save(task)
@@ -385,7 +385,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
             data_result = await self._call_agent("data_collector", user_query, context_id)
 
             logger.info("===========" * 10)
-            logger.info(f"✅ [data_collector] 에이전트 작업 완료 - 응답: {data_result}")
+            logger.info(f" [data_collector] 에이전트 작업 완료 - 응답: {data_result}")
             logger.info("===========" * 10)
 
             # 완료 상태 업데이트
@@ -394,7 +394,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 task.metadata["pending_steps"].remove("data_collection")
             task.metadata["agent_responses"]["data_collector"] = data_result
 
-            success_message = "✅ [데이터 수집 에이전트] 실시간 시장 데이터 및 관련 정보 수집을 완료했습니다."
+            success_message = " [데이터 수집 에이전트] 실시간 시장 데이터 및 관련 정보 수집을 완료했습니다."
 
             parts = [
                 TextPart(text=str(success_message)),
@@ -409,7 +409,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
             results["steps"].append("data_collection")
 
             if pattern == "DATA_ONLY":
-                results["summary"] = "✅ 데이터 수집 에이전트가 시장 데이터 수집을 완료했습니다."
+                results["summary"] = " 데이터 수집 에이전트가 시장 데이터 수집을 완료했습니다."
                 return results
 
             # 2. 분석 실행 (DATA_ANALYSIS, FULL_WORKFLOW)
@@ -417,7 +417,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 # Task metadata 업데이트
                 task.metadata["current_step"] = "analysis"
 
-                analysis_message = "🔍 [분석 에이전트] 기술적 분석, 펀더멘털 분석, 심리지표 분석을 시작합니다."
+                analysis_message = " [분석 에이전트] 기술적 분석, 펀더멘털 분석, 심리지표 분석을 시작합니다."
                 parts = [
                     TextPart(text=str(analysis_message))
                 ]
@@ -430,7 +430,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 analysis_result = await self._call_agent("analysis", analysis_input, context_id)
 
                 logger.info("===========" * 10)
-                logger.info(f"✅ [analysis] 에이전트 작업 완료 - 응답: {analysis_result}")
+                logger.info(f" [analysis] 에이전트 작업 완료 - 응답: {analysis_result}")
                 logger.info("===========" * 10)
 
                 # 완료 상태 업데이트
@@ -439,7 +439,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                     task.metadata["pending_steps"].remove("analysis")
                 task.metadata["agent_responses"]["analysis"] = analysis_result
 
-                analysis_success_message = "✅ [분석 에이전트] 종합적인 투자 분석 및 신호 생성을 완료했습니다."
+                analysis_success_message = " [분석 에이전트] 종합적인 투자 분석 및 신호 생성을 완료했습니다."
 
                 # 빈 배열 처리
                 if isinstance(analysis_result, list) and len(analysis_result) == 0:
@@ -460,7 +460,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 results["steps"].append("analysis")
 
                 if pattern == "DATA_ANALYSIS":
-                    results["summary"] = "✅ 데이터 수집 및 투자 분석이 완료되었습니다. 분석 결과를 확인해주세요."
+                    results["summary"] = " 데이터 수집 및 투자 분석이 완료되었습니다. 분석 결과를 확인해주세요."
                     return results
 
             # 3. 거래 실행
@@ -468,7 +468,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 # Task metadata 업데이트
                 task.metadata["current_step"] = "trading"
 
-                trading_message = "💹 [거래 에이전트] 포트폴리오 최적화 및 주문 준비를 시작합니다."
+                trading_message = " [거래 에이전트] 포트폴리오 최적화 및 주문 준비를 시작합니다."
                 parts = [
                     TextPart(text=str(trading_message))
                 ]
@@ -481,7 +481,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 trading_result = await self._call_agent("trading", trading_input, context_id)
 
                 logger.info("===========" * 10)
-                logger.info(f"✅ [trading] 에이전트 작업 완료 - 응답: {trading_result}")
+                logger.info(f" [trading] 에이전트 작업 완료 - 응답: {trading_result}")
                 logger.info("===========" * 10)
 
                 # 완료 상태 업데이트
@@ -490,7 +490,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                     task.metadata["pending_steps"].remove("trading")
                 task.metadata["agent_responses"]["trading"] = trading_result
 
-                trading_success_message = "✅ [거래 에이전트] 거래 전략 수립 및 리스크 검토를 완료했습니다."
+                trading_success_message = " [거래 에이전트] 거래 전략 수립 및 리스크 검토를 완료했습니다."
 
                 # 빈 배열 처리
                 if isinstance(trading_result, list) and len(trading_result) == 0:
@@ -509,7 +509,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
 
                 results["trading"] = trading_result
                 results["steps"].append("trading")
-                results["summary"] = "✅ 모든 워크플로우가 성공적으로 완료되었습니다. 거래 전략이 수립되었습니다."
+                results["summary"] = " 모든 워크플로우가 성공적으로 완료되었습니다. 거래 전략이 수립되었습니다."
 
             return results
 
@@ -522,14 +522,14 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 if task:
                     task.status = TaskStatus(
                         state=TaskState.failed,
-                        message=new_agent_text_message(f"❌ 워크플로우 실행 중 오류 발생: {str(e)}"),
+                        message=new_agent_text_message(f" 워크플로우 실행 중 오류 발생: {str(e)}"),
                         timestamp=datetime.now(tz=pytz.timezone("Asia/Seoul")).isoformat()
                     )
                     task.metadata["error"] = str(e)
                     task.metadata["error_type"] = type(e).__name__
                     task.metadata["workflow_phase"] = "failed"
 
-                    error_message = f"❌ 워크플로우 실행 중 오류 발생: {str(e)}"
+                    error_message = f" 워크플로우 실행 중 오류 발생: {str(e)}"
                     parts = [
                         TextPart(text=str(error_message))
                     ]
@@ -541,7 +541,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
                 logger.error(f"Failed to update task with error state: {task_error}", exc_info=True)
 
             results["error"] = str(e)
-            results["summary"] = f"❌ 워크플로우 실행 중 오류가 발생했습니다: {str(e)}"
+            results["summary"] = f" 워크플로우 실행 중 오류가 발생했습니다: {str(e)}"
             return results
 
     async def _call_agent(self, agent_type: str, query: str, context_id: str) -> dict[str, Any]:
@@ -584,7 +584,7 @@ class CustomSupervisorAgentA2A(AgentExecutor):
         """
         try:
             logger.info(
-                "🚀 [SUPERVISOR] 워크플로우 오케스트레이션 시작 - A2A Protocol"
+                " [SUPERVISOR] 워크플로우 오케스트레이션 시작 - A2A Protocol"
             )
 
             # Initialize agent if needed
@@ -779,7 +779,7 @@ def main():
         # CORS가 적용된 앱 생성
         app = create_cors_enabled_app(server_app)
 
-        logger.info(f"✅ SupervisorAgent A2A server starting at {url} with CORS enabled")
+        logger.info(f" SupervisorAgent A2A server starting at {url} with CORS enabled")
         # uvicorn 서버 설정 - 타임아웃 증가 및 스트리밍 최적화
         config = uvicorn.Config(
             app,

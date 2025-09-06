@@ -94,13 +94,13 @@ class KiwoomRESTAPIClient:
             "production",
         ]:  # 명시적으로 mode가 지정되고 유효한 경우
             self.mode = mode
-            logger.info(f"🎯 명시적 모드 설정: {mode}")
+            logger.info(f" 명시적 모드 설정: {mode}")
         elif os.getenv("KIWOOM_PRODUCTION_MODE", "false").lower() == "true":
             self.mode = "production"
-            logger.warning("🚨 PRODUCTION MODE 활성화됨 - 실거래 주의!")
+            logger.warning(" PRODUCTION MODE 활성화됨 - 실거래 주의!")
         else:
             self.mode = "paper"  # 기본값: 키움 공식 모의투자
-            logger.info("📊 Paper Trading 모드 활성화됨 - 키움 모의투자")
+            logger.info(" Paper Trading 모드 활성화됨 - 키움 모의투자")
 
         # API 엔드포인트 설정
         KiwoomEndpoints.set_mode(self.mode)
@@ -117,11 +117,11 @@ class KiwoomRESTAPIClient:
 
         account_display = self.account_no[:4] + "****" if self.account_no else "None"
         logger.info(
-            f"🚀 KiwoomRESTAPIClient 초기화 완료: "
+            f" KiwoomRESTAPIClient 초기화 완료: "
             f"mode={self.mode}, base_url={self.base_url}, account={account_display}"
         )
         logger.info(
-            f"📊 디버깅 정보 - 앱키: {'설정됨' if self.app_key else '없음'}, "
+            f" 디버깅 정보 - 앱키: {'설정됨' if self.app_key else '없음'}, "
             f"시크릿: {'설정됨' if self.app_secret else '없음'}"
         )
 

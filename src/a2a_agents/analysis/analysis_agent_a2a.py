@@ -148,10 +148,10 @@ def main():
 
             # 비동기 초기화 실행 및 결과 확인
             if not await _a2a_wrapper.initialize():
-                logger.error("❌ AnalysisAgentA2A 초기화 실패")
+                logger.error(" AnalysisAgentA2A 초기화 실패")
                 return None
 
-            logger.info("✅ AnalysisAgentA2A 초기화 완료")
+            logger.info(" AnalysisAgentA2A 초기화 완료")
             return _a2a_wrapper
 
         except Exception as e:
@@ -191,8 +191,8 @@ def main():
         app = create_cors_enabled_app(server_app)
 
         # 서버 시작 정보 로깅
-        logger.info(f"✅ AnalysisAgent A2A server starting at {url} with CORS enabled")
-        logger.info(f"📋 Agent Card URL: {url}/.well-known/agent-card.json")  # A2A 표준 메타데이터 엔드포인트
+        logger.info(f" AnalysisAgent A2A server starting at {url} with CORS enabled")
+        logger.info(f" Agent Card URL: {url}/.well-known/agent-card.json")  # A2A 표준 메타데이터 엔드포인트
         logger.info(f"🩺 Health Check: {url}/health")  # 헬스체크 엔드포인트
 
         # uvicorn 서버 직접 실행
@@ -217,7 +217,3 @@ def main():
         # 서버 시작 실패 시 에러 로깅 및 예외 재발생
         logger.error(f"서버 시작 중 오류 발생: {e}", exc_info=True)
         raise
-
-
-if __name__ == "__main__":
-    main()

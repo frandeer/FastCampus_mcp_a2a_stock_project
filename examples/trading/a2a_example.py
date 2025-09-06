@@ -65,14 +65,14 @@ class TradingIntegrationTestResult:
         report = f"""
 🧪 TradingAgent A2A 통합 테스트 보고서
 {'='*50}
-📊 테스트 결과: {self.passed_tests}/{self.total_tests} 성공
+ 테스트 결과: {self.passed_tests}/{self.total_tests} 성공
 ⏱️  실행 시간: {duration:.2f}초
-📅 실행 시간: {self.start_time.strftime('%Y-%m-%d %H:%M:%S') if self.start_time else 'N/A'}
+ 실행 시간: {self.start_time.strftime('%Y-%m-%d %H:%M:%S') if self.start_time else 'N/A'}
 
-📋 상세 결과:
+ 상세 결과:
 """
         for test_case in self.test_cases:
-            status = "✅ 성공" if test_case["success"] else "❌ 실패"
+            status = " 성공" if test_case["success"] else " 실패"
             report += f"   {status} - {test_case['test_name']}\n"
             if not test_case["success"] and "error" in test_case["details"]:
                 report += f"     오류: {test_case['details']['error']}\n"
@@ -125,7 +125,7 @@ def validate_trading_output(response: Dict[str, Any], expected_agent_type: str =
     
     # HITL 지표 검증
     if validation_result["hitl_indicators"]:
-        print(f"    🛡️ 발견된 HITL 지표: {', '.join(validation_result['hitl_indicators'])}")
+        print(f"    ️ 발견된 HITL 지표: {', '.join(validation_result['hitl_indicators'])}")
     else:
         validation_result["warnings"].append("Human-in-the-Loop 관련 키워드를 찾을 수 없습니다")
     
@@ -135,7 +135,7 @@ def validate_trading_output(response: Dict[str, Any], expected_agent_type: str =
         status = response.get("status")
         if status in valid_trading_statuses:
             validation_result["status_transitions"].append(status)
-            print(f"    📊 거래 상태: {status}")
+            print(f"     거래 상태: {status}")
         else:
             validation_result["warnings"].append(f"알 수 없는 거래 상태: '{status}'")
     
@@ -161,13 +161,13 @@ async def test_hitl_workflow_simulation(
     workflow_stages = []
     current_stage = "초기화"
     
-    print(f"  🛡️ HITL 워크플로우 시뮬레이션 테스트...")
-    print(f"    📋 거래 신호: {trading_signal}")
-    print(f"    🎯 대상 종목: {', '.join(symbols)}")
+    print(f"  ️ HITL 워크플로우 시뮬레이션 테스트...")
+    print(f"     거래 신호: {trading_signal}")
+    print(f"     대상 종목: {', '.join(symbols)}")
     
     try:
         # Stage 1: 초기 거래 요청
-        print(f"    🔄 단계 1: 거래 요청 전송...")
+        print(f"     단계 1: 거래 요청 전송...")
         start_time = time.time()
         
         async with A2AClientManagerV2(base_url=trading_url) as client_manager:
@@ -204,10 +204,10 @@ async def test_hitl_workflow_simulation(
         has_hitl_indicators = len(validation.get("hitl_indicators", [])) > 0
         requires_approval = final_response.get("status") == "input_required" if isinstance(final_response, dict) else False
         
-        print(f"    📊 실행 시간: {execution_time:.2f}초")
-        print(f"    📈 상태 전환: {' -> '.join(status_sequence)}")
-        print(f"    🛡️ HITL 필요: {'Yes' if requires_approval else 'No'}")
-        print(f"    🔍 HITL 지표: {'발견됨' if has_hitl_indicators else '미발견'}")
+        print(f"     실행 시간: {execution_time:.2f}초")
+        print(f"     상태 전환: {' -> '.join(status_sequence)}")
+        print(f"    ️ HITL 필요: {'Yes' if requires_approval else 'No'}")
+        print(f"     HITL 지표: {'발견됨' if has_hitl_indicators else '미발견'}")
         
         # 성공 기준: 
         # 1. 응답을 받았음
@@ -221,9 +221,9 @@ async def test_hitl_workflow_simulation(
         
         overall_success = all(success_criteria.values())
         
-        print(f"    ✅ 성공 기준:")
+        print(f"     성공 기준:")
         for criterion, passed in success_criteria.items():
-            status = "✅" if passed else "❌"
+            status = "" if passed else ""
             print(f"      {status} {criterion}")
         
         return {
@@ -236,7 +236,7 @@ async def test_hitl_workflow_simulation(
         }
         
     except Exception as e:
-        print(f"    ❌ HITL 워크플로우 테스트 실패: {str(e)}")
+        print(f"     HITL 워크플로우 테스트 실패: {str(e)}")
         return {
             "success": False,
             "error": str(e),
@@ -271,9 +271,9 @@ async def test_risk_assessment_integration(
         "user_question": f"{user_question} (고위험 시나리오 테스트)",
     }
     
-    print(f"  ⚠️ 리스크 평가 통합 테스트 (고위험 시나리오)...")
-    print(f"    📊 신뢰도: {high_risk_analysis['confidence_level']}")
-    print(f"    🎯 통합점수: {high_risk_analysis['integrated_score']}")
+    print(f"  ️ 리스크 평가 통합 테스트 (고위험 시나리오)...")
+    print(f"     신뢰도: {high_risk_analysis['confidence_level']}")
+    print(f"     통합점수: {high_risk_analysis['integrated_score']}")
     
     try:
         async with A2AClientManagerV2(base_url=trading_url) as client_manager:
@@ -300,8 +300,8 @@ async def test_risk_assessment_integration(
         requires_approval = final_response.get("status") == "input_required" if isinstance(final_response, dict) else False
         has_risk_keywords = len(found_risk_keywords) > 0
         
-        print(f"    🔍 발견된 리스크 키워드: {', '.join(found_risk_keywords[:5])}")  # 처음 5개만
-        print(f"    🛡️ 승인 필요: {'Yes' if requires_approval else 'No'}")
+        print(f"     발견된 리스크 키워드: {', '.join(found_risk_keywords[:5])}")  # 처음 5개만
+        print(f"    ️ 승인 필요: {'Yes' if requires_approval else 'No'}")
         
         # 고위험 시나리오에서는 승인이 필요하거나 리스크 키워드가 있어야 함
         risk_awareness = requires_approval or has_risk_keywords
@@ -315,7 +315,7 @@ async def test_risk_assessment_integration(
         }
         
     except Exception as e:
-        print(f"    ❌ 리스크 평가 테스트 실패: {str(e)}")
+        print(f"     리스크 평가 테스트 실패: {str(e)}")
         return {
             "success": False,
             "error": str(e)
@@ -369,7 +369,7 @@ async def call_trading_via_a2a(
         "user_question": user_question,
     }
     
-    print("\n📤 거래 요청 전송:")
+    print("\n 거래 요청 전송:")
     print(f"   - 종목: {symbols}")
     print(f"   - 거래 신호: {trading_signal}")
     print(f"   - 분석 점수: {analysis_result.get('integrated_score', 'N/A')}")
@@ -388,14 +388,14 @@ async def call_trading_via_a2a(
                 return response_data
                 
         except Exception as e:
-            print(f"❌ A2A 호출 실패: {str(e)}")
+            print(f" A2A 호출 실패: {str(e)}")
             raise
 
 
 def parse_trading_response(response_text: str):
     """Trading Agent 응답 파싱 및 출력"""
     
-    print("\n🔄 Agent 거래 응답:")
+    print("\n Agent 거래 응답:")
     print("-" * 50)
     
     # 응답을 섹션별로 분리하여 표시
@@ -408,7 +408,7 @@ def parse_trading_response(response_text: str):
             continue
             
         # 섹션 헤더 감지
-        if line.startswith("🔄") or line.startswith("⚠️") or line.startswith("📋") or line.startswith("👤"):
+        if line.startswith("") or line.startswith("️") or line.startswith("") or line.startswith(""):
             current_section = line
             print(f"\n{line}")
         elif line.startswith("-") and current_section:
@@ -440,7 +440,7 @@ def format_trading_result(result: Dict[str, Any]):
                         break
                 
                 if final_ai_message:
-                    print("✅ 거래 프로세스 완료!")
+                    print(" 거래 프로세스 완료!")
                     
                     # 도구 호출 통계
                     tool_calls_count = 0
@@ -450,12 +450,12 @@ def format_trading_result(result: Dict[str, Any]):
                         elif msg.get("type") == "ai" and "tool_calls" in msg.get("additional_kwargs", {}):
                             tool_calls_count += len(msg["additional_kwargs"]["tool_calls"])
                     
-                    print(f"🔧 도구 호출 횟수: {tool_calls_count}")
-                    print(f"💬 총 메시지 수: {len(messages)}")
+                    print(f" 도구 호출 횟수: {tool_calls_count}")
+                    print(f" 총 메시지 수: {len(messages)}")
                     
                     # 거래 내용 출력
                     trading_content = final_ai_message["content"]
-                    print("\n🔄 Agent 거래 응답:")
+                    print("\n Agent 거래 응답:")
                     print("-" * 50)
                     
                     # 거래 내용을 줄 단위로 출력 (처음 20줄)
@@ -468,26 +468,26 @@ def format_trading_result(result: Dict[str, Any]):
                         print("  ... (더 많은 내용은 JSON 파일 참조)")
                     
                     # 메타데이터
-                    print("\n📋 거래 메타데이터:")
+                    print("\n 거래 메타데이터:")
                     print(f"  - Agent 이름: {first_data_part.get('agent_metadata', {}).get('agent_name', 'TradingAgent')}")
                     print(f"  - 실행 성공: True")
                     print(f"  - 전체 DataPart 수: {len(data_parts)}")
                     
                     return
         
-        print("❌ 거래 실행 실패: 유효한 거래 결과를 찾을 수 없습니다.")
+        print(" 거래 실행 실패: 유효한 거래 결과를 찾을 수 없습니다.")
         return
     else:
         # 기존 포맷 호환성 유지
         if not result.get("success", False):
-            print(f"❌ 거래 실행 실패: {result.get('error', 'Unknown error')}")
+            print(f" 거래 실행 실패: {result.get('error', 'Unknown error')}")
             return
     
     # 전체 메시지 히스토리 표시
     if "full_message_history" in result:
         message_history = result["full_message_history"]
         if message_history:
-            print(f"\n📚 전체 메시지 히스토리 ({len(message_history)}개 메시지):")
+            print(f"\n 전체 메시지 히스토리 ({len(message_history)}개 메시지):")
             print("-" * 60)
             for i, msg in enumerate(message_history, 1):
                 role = msg.get('role', 'unknown')
@@ -495,7 +495,7 @@ def format_trading_result(result: Dict[str, Any]):
                 timestamp = msg.get('timestamp', 'N/A')
 
                 # 역할 이모지
-                role_emoji = {"user": "👤", "agent": "🤖", "system": "⚙️"}.get(role, "❓")
+                role_emoji = {"user": "", "agent": "🤖", "system": "️"}.get(role, "")
 
                 print(f"{role_emoji} 메시지 {i} ({role}) - {timestamp}")
                 if content:
@@ -508,7 +508,7 @@ def format_trading_result(result: Dict[str, Any]):
     if "streaming_text" in result:
         streaming_text = result["streaming_text"]
         if streaming_text:
-            print("\n🌊 스트리밍 텍스트:")
+            print("\n 스트리밍 텍스트:")
             print("-" * 50)
             # 스트리밍 텍스트를 줄 단위로 출력
             for line in streaming_text.split("\n")[:15]:  # 처음 15줄만
@@ -519,9 +519,9 @@ def format_trading_result(result: Dict[str, Any]):
     
     # 이벤트 카운트 표시
     if "event_count" in result:
-        print(f"\n⚡ 처리된 이벤트 수: {result['event_count']}")
+        print(f"\n 처리된 이벤트 수: {result['event_count']}")
     
-    print("\n✨ Trading Agent A2A 호출 성공!")
+    print("\n Trading Agent A2A 호출 성공!")
 
 
 async def main():
@@ -532,7 +532,7 @@ async def main():
 
     # 1. A2A 서버 상태 확인
     if not await check_a2a_server():
-        print("\n⚠️ A2A 서버가 실행되지 않았습니다.")
+        print("\n️ A2A 서버가 실행되지 않았습니다.")
         print("위의 해결 방법을 따라 서버를 먼저 실행해주세요.")
         return
 
@@ -601,8 +601,8 @@ async def main():
         try:
             if test_type == "standard":
                 # 기본 거래 테스트
-                print("\n🔄 A2A 프로토콜을 통해 안전한 거래 실행 중...")
-                print("⚠️ Human 승인이 필요할 수 있습니다")
+                print("\n A2A 프로토콜을 통해 안전한 거래 실행 중...")
+                print("️ Human 승인이 필요할 수 있습니다")
                 result = await call_trading_via_a2a(
                     symbols=test_case["symbols"],
                     trading_signal=test_case["trading_signal"],
@@ -675,8 +675,8 @@ async def main():
                     
                 validation = validate_trading_output(final_result, "trading")
                 
-                print(f"  📋 A2AOutput 검증 결과:")
-                print(f"    - 유효성: {'✅ 통과' if validation['valid'] else '❌ 실패'}")
+                print(f"   A2AOutput 검증 결과:")
+                print(f"    - 유효성: {' 통과' if validation['valid'] else ' 실패'}")
                 print(f"    - 발견된 필드: {', '.join(validation['found_fields'])}")
                 if validation.get('hitl_indicators'):
                     print(f"    - HITL 지표: {', '.join(validation['hitl_indicators'])}")
@@ -707,10 +707,10 @@ async def main():
             with open(output_file, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2)
 
-            print(f"\n💾 전체 결과가 {output_file}에 저장되었습니다.")
+            print(f"\n 전체 결과가 {output_file}에 저장되었습니다.")
 
         except Exception as e:
-            print(f"\n❌ 테스트 실행 중 오류 발생: {str(e)}")
+            print(f"\n 테스트 실행 중 오류 발생: {str(e)}")
             import traceback
             traceback.print_exc()
             
@@ -722,8 +722,8 @@ async def main():
             )
 
     print_section("A2A 거래 테스트 완료")
-    print("✨ 모든 거래 테스트가 완료되었습니다.")
-    print("🔒 안전한 거래 시스템이 정상적으로 작동했습니다.")
+    print(" 모든 거래 테스트가 완료되었습니다.")
+    print(" 안전한 거래 시스템이 정상적으로 작동했습니다.")
 
 
 if __name__ == "__main__":

@@ -176,21 +176,21 @@ class KoreanMarketUtils:
 
         # 주말
         if now.weekday() >= 5:
-            return "📅 주말 휴장"
+            return " 주말 휴장"
 
         # 장중
         if self.is_market_hours():
             if self.is_high_volume_period():
-                return "🔥 집중 거래 시간"
+                return " 집중 거래 시간"
 
             if current_time < self.config.lunch_break_start:
-                return "📈 오전 장"
+                return " 오전 장"
             else:
-                return "📉 오후 장"
+                return " 오후 장"
 
         # 점심 시간
         if self.config.lunch_break_start <= current_time < self.config.lunch_break_end:
-            return "🍽️ 점심 시간"
+            return "️ 점심 시간"
 
         # 장 시작 전
         if current_time < self.config.market_open_time:
@@ -198,9 +198,9 @@ class KoreanMarketUtils:
 
         # 장 마감 후
         if current_time > self.config.market_close_time:
-            return "🌙 장 마감"
+            return " 장 마감"
 
-        return "❓ 알 수 없음"
+        return " 알 수 없음"
 
     def calculate_portfolio_kosdaq_weight(self, portfolio: dict) -> float:
         """

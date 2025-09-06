@@ -244,15 +244,15 @@ class KiwoomAuthManager:
         token_url = f"https://{api_domain}/oauth2/token"
 
         headers = {
-            "Content-Type": "application/json",  # ✅ 검증된 Content-Type
+            "Content-Type": "application/json",  #  검증된 Content-Type
             "User-Agent": "KiwoomAuthManager/1.0",
         }
 
-        # ✅ 검증된 성공 방식: appkey/secretkey 필드명
+        #  검증된 성공 방식: appkey/secretkey 필드명
         data = {
             "grant_type": "client_credentials",
-            "appkey": app_key,  # ✅ 검증된 필드명
-            "secretkey": app_secret,  # ✅ 검증된 필드명 (appsecret 아님)
+            "appkey": app_key,  #  검증된 필드명
+            "secretkey": app_secret,  #  검증된 필드명 (appsecret 아님)
         }
 
         try:
@@ -268,7 +268,7 @@ class KiwoomAuthManager:
             return_msg = token_data.get("return_msg", "")
 
             if return_code == 0:
-                # ✅ 성공: 키움은 'token' 필드 사용 (access_token 아님)
+                #  성공: 키움은 'token' 필드 사용 (access_token 아님)
                 access_token = token_data.get("token")
                 if not access_token:
                     raise AuthError(
@@ -303,7 +303,7 @@ class KiwoomAuthManager:
                     is_paper_mode=is_paper_mode,
                 )
 
-                logger.info(f"✅ 토큰 발급 성공: {return_msg}")
+                logger.info(f" 토큰 발급 성공: {return_msg}")
                 return token_info
             else:
                 error_msg = (

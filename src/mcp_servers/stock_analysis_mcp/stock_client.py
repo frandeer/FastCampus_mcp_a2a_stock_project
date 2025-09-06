@@ -1496,38 +1496,38 @@ class StockClient:
             # 골든크로스/데드크로스
             golden_cross = indicators.get("golden_cross", {})
             if golden_cross.get("cross_type") == "GOLDEN_CROSS":
-                insights.append("✅ 골든크로스 발생 - 중장기 상승 추세 전환 신호")
+                insights.append(" 골든크로스 발생 - 중장기 상승 추세 전환 신호")
             elif golden_cross.get("cross_type") == "DEATH_CROSS":
-                warnings.append("⚠️ 데드크로스 발생 - 하락 추세 전환 주의")
+                warnings.append("️ 데드크로스 발생 - 하락 추세 전환 주의")
 
             # 이동평균선 배열
             ma_arrangement = indicators.get("ma_arrangement", {})
             if ma_arrangement.get("arrangement") == "정배열":
-                insights.append("✅ 이동평균선 정배열 - 강한 상승 추세")
+                insights.append(" 이동평균선 정배열 - 강한 상승 추세")
             elif ma_arrangement.get("arrangement") == "역배열":
-                warnings.append("⚠️ 이동평균선 역배열 - 하락 추세 지속")
+                warnings.append("️ 이동평균선 역배열 - 하락 추세 지속")
 
             # RSI
             rsi = indicators.get("rsi", 50)
             if rsi < self.KOREAN_MARKET_THRESHOLDS["oversold_rsi"]:
-                insights.append(f"✅ RSI {rsi:.1f} - 과매도 구간, 반등 가능성")
+                insights.append(f" RSI {rsi:.1f} - 과매도 구간, 반등 가능성")
             elif rsi > self.KOREAN_MARKET_THRESHOLDS["overbought_rsi"]:
-                warnings.append(f"⚠️ RSI {rsi:.1f} - 과매수 구간, 조정 가능성")
+                warnings.append(f"️ RSI {rsi:.1f} - 과매수 구간, 조정 가능성")
 
             # 이격도
             disparity = indicators.get("disparity_rates", {})
             ma20_disp = disparity.get("ma20_disparity", 0)
             if ma20_disp < -5:
-                insights.append(f"✅ 20일 이격도 {ma20_disp:.1f}% - 과매도 상태")
+                insights.append(f" 20일 이격도 {ma20_disp:.1f}% - 과매도 상태")
             elif ma20_disp > 5:
-                warnings.append(f"⚠️ 20일 이격도 {ma20_disp:.1f}% - 과매수 상태")
+                warnings.append(f"️ 20일 이격도 {ma20_disp:.1f}% - 과매수 상태")
 
             # 거래량
             volume_trend = indicators.get("volume_trend", {})
             if volume_trend and volume_trend.get("signal") == "very_high":
-                insights.append("📊 거래량 급증 - 주목 필요")
+                insights.append(" 거래량 급증 - 주목 필요")
             elif volume_trend and volume_trend.get("signal") == "low":
-                warnings.append("📉 거래량 감소 - 관심 저조")
+                warnings.append(" 거래량 감소 - 관심 저조")
 
         # 기본적 분석 인사이트
         if fundamental:
@@ -1538,17 +1538,17 @@ class StockClient:
             roe = metrics.get("roe", 0)
 
             if 0 < per <= self.KOREAN_MARKET_THRESHOLDS["undervalued_per"]:
-                insights.append(f"✅ PER {per:.1f}배 - 저평가 매력")
+                insights.append(f" PER {per:.1f}배 - 저평가 매력")
             elif per > self.KOREAN_MARKET_THRESHOLDS["overvalued_per"]:
-                warnings.append(f"⚠️ PER {per:.1f}배 - 고평가 부담")
+                warnings.append(f"️ PER {per:.1f}배 - 고평가 부담")
 
             if 0 < pbr <= self.KOREAN_MARKET_THRESHOLDS["undervalued_pbr"]:
-                insights.append(f"✅ PBR {pbr:.2f}배 - 자산가치 대비 저평가")
+                insights.append(f" PBR {pbr:.2f}배 - 자산가치 대비 저평가")
 
             if roe >= self.KOREAN_MARKET_THRESHOLDS["excellent_roe"]:
-                insights.append(f"✅ ROE {roe:.1f}% - 우수한 수익성")
+                insights.append(f" ROE {roe:.1f}% - 우수한 수익성")
             elif roe < self.KOREAN_MARKET_THRESHOLDS["good_roe"]:
-                warnings.append(f"⚠️ ROE {roe:.1f}% - 수익성 개선 필요")
+                warnings.append(f"️ ROE {roe:.1f}% - 수익성 개선 필요")
 
         # 종합 의견 생성
         tech_signal = technical.get("signal", "중립") if technical else "중립"
@@ -1557,16 +1557,16 @@ class StockClient:
         # 투자 권장사항
         recommendations = []
         if "적극 매수" in tech_signal or "적극 매수" in fund_signal:
-            recommendations.append("💰 적극 매수 추천")
+            recommendations.append(" 적극 매수 추천")
             recommendations.append("분할 매수로 리스크 관리 권장")
         elif "매수" in tech_signal or "매수" in fund_signal:
-            recommendations.append("📈 매수 고려")
+            recommendations.append(" 매수 고려")
             recommendations.append("적정 진입 시점 모니터링 필요")
         elif "매도" in tech_signal or "매도" in fund_signal:
-            recommendations.append("📉 매도 고려")
+            recommendations.append(" 매도 고려")
             recommendations.append("손절 라인 설정 권장")
         else:
-            recommendations.append("🔍 관망 권장")
+            recommendations.append(" 관망 권장")
             recommendations.append("추가 신호 확인 후 진입")
 
         # 리스크 요인
@@ -1595,11 +1595,11 @@ class StockClient:
         negative_count = len(warnings)
 
         if positive_count > negative_count * 2:
-            opinion = "📈 전반적으로 긍정적인 신호가 우세합니다. "
+            opinion = " 전반적으로 긍정적인 신호가 우세합니다. "
         elif negative_count > positive_count * 2:
-            opinion = "📉 전반적으로 부정적인 신호가 우세합니다. "
+            opinion = " 전반적으로 부정적인 신호가 우세합니다. "
         else:
-            opinion = "⚖️ 긍정과 부정 신호가 혼재되어 있습니다. "
+            opinion = "️ 긍정과 부정 신호가 혼재되어 있습니다. "
 
         if "적극 매수" in str(recommendations):
             opinion += "적극적인 매수를 고려해볼 만합니다."

@@ -201,7 +201,7 @@ class AnalysisA2AAgent(BaseA2AAgent, BaseGraphAgent):
 
             return self.create_a2a_output(
                 status="working",
-                text_content=f"📈 분석 진행 중: {dimension} 분석",
+                text_content=f" 분석 진행 중: {dimension} 분석",
                 stream_event=True,
                 metadata={
                     "event_type": "tool_start",

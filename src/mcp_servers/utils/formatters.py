@@ -332,7 +332,7 @@ def format_technical_analysis_result(analysis: dict) -> str:
                 if "signal" in data:
                     signal = data["signal"]
                     signal_symbol = (
-                        "🔴" if signal == "SELL" else "🟢" if signal == "BUY" else "⚪"
+                        "" if signal == "SELL" else "🟢" if signal == "BUY" else ""
                     )
                     lines.append(f"    → 신호: {signal_symbol} {signal}")
 
@@ -343,7 +343,7 @@ def format_technical_analysis_result(analysis: dict) -> str:
         signal = analysis["overall_signal"]
         confidence = analysis.get("confidence", 0)
 
-        signal_symbol = "🔴" if signal == "SELL" else "🟢" if signal == "BUY" else "⚪"
+        signal_symbol = "" if signal == "SELL" else "🟢" if signal == "BUY" else ""
         lines.append("【종합 신호】")
         lines.append(f"  신호: {signal_symbol} {signal}")
         lines.append(f"  신뢰도: {confidence:.1%}")
@@ -432,7 +432,7 @@ def format_error_response(error: Exception, context: str | None = None) -> str:
     error_type = type(error).__name__
     error_message = str(error)
 
-    lines = ["❌ 오류가 발생했습니다"]
+    lines = [" 오류가 발생했습니다"]
     lines.append(f"유형: {error_type}")
     lines.append(f"메시지: {error_message}")
 
@@ -462,7 +462,7 @@ def format_data_quality_report(report: dict) -> str:
     # 전체 점수
     if "overall_score" in report:
         score = report["overall_score"]
-        score_emoji = "🟢" if score >= 90 else "🟡" if score >= 70 else "🔴"
+        score_emoji = "🟢" if score >= 90 else "🟡" if score >= 70 else ""
         lines.append("【전체 품질 점수】")
         lines.append(f"  {score_emoji} {score:.1f}/100")
         lines.append("")
@@ -471,7 +471,7 @@ def format_data_quality_report(report: dict) -> str:
     if "categories" in report:
         lines.append("【카테고리별 점수】")
         for category, score in report["categories"].items():
-            score_emoji = "🟢" if score >= 90 else "🟡" if score >= 70 else "🔴"
+            score_emoji = "🟢" if score >= 90 else "🟡" if score >= 70 else ""
             lines.append(f"  {category}: {score_emoji} {score:.1f}")
         lines.append("")
 
@@ -481,7 +481,7 @@ def format_data_quality_report(report: dict) -> str:
         for issue in report["issues"]:
             severity = issue.get("severity", "INFO")
             severity_emoji = (
-                "🔴" if severity == "ERROR" else "🟡" if severity == "WARNING" else "ℹ️"
+                "" if severity == "ERROR" else "🟡" if severity == "WARNING" else "ℹ️"
             )
             lines.append(f"  {severity_emoji} {issue.get('message', '')}")
         lines.append("")

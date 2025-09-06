@@ -170,12 +170,12 @@ class MarketDomainServer(KiwoomDomainServer):
     """
     키움 Market Domain 서버 - 실시간 시장 데이터 허브.
 
-    🏗️ 아키텍처 위치:
+    ️ 아키텍처 위치:
     - **Layer 1 (MCP Server)**: 시장 데이터 제공자
     - **Port**: 8031
     - **Domain**: market_domain
 
-    📊 주요 기능:
+     주요 기능:
     1. **실시간 시세 데이터**:
        - 현재가, 등락률, 거래량
        - 호가 정보 (매수/매도 10단계)
@@ -191,12 +191,12 @@ class MarketDomainServer(KiwoomDomainServer):
        - 등락률 순위 (상승/하락)
        - 거래대금 순위
 
-    🔧 LangGraph Agent 연동:
+     LangGraph Agent 연동:
     - **DataCollectorAgent**: 실시간 시세 수집
     - **AnalysisAgent**: 차트 데이터 기반 기술적 분석
     - **TradingAgent**: 현재가 기반 주문 가격 결정
 
-    ⚡ MCP Tools (15개):
+     MCP Tools (15개):
     - get_stock_basic_info: 종목 기본정보
     - get_stock_orderbook: 호가 정보
     - get_stock_execution_info: 체결 정보
@@ -208,7 +208,7 @@ class MarketDomainServer(KiwoomDomainServer):
     - get_trade_value_top: 거래대금 상위
     - get_market_status: 장 상태 확인
 
-    💡 특징:
+     특징:
     - 실시간 WebSocket 스트리밍 지원
     - 차트 데이터 캐싱으로 성능 최적화
     - Rate limiting으로 API 할당량 관리

@@ -117,13 +117,13 @@ class A2AIntegrationTestRunner:
                 url = f"http://localhost:{suite.port}/.well-known/agent-card.json"
                 async with session.get(url, timeout=aiohttp.ClientTimeout(total=5)) as response:
                     if response.status == 200:
-                        logger.info(f"✅ {suite.name} 서버 응답 정상 (포트 {suite.port})")
+                        logger.info(f" {suite.name} 서버 응답 정상 (포트 {suite.port})")
                         return True
                     else:
-                        logger.warning(f"⚠️ {suite.name} 서버 응답 이상: {response.status}")
+                        logger.warning(f"️ {suite.name} 서버 응답 이상: {response.status}")
                         return False
         except Exception as e:
-            logger.error(f"❌ {suite.name} 헬스 체크 실패 (포트 {suite.port}): {e}")
+            logger.error(f" {suite.name} 헬스 체크 실패 (포트 {suite.port}): {e}")
             return False
     
     def _load_test_module(self, module_path: str):
@@ -145,8 +145,8 @@ class A2AIntegrationTestRunner:
         
         print(f"\n{'='*80}")
         print(f"🧪 {suite.name} 통합 테스트 시작")
-        print(f"   📍 포트: {suite.port}")
-        print(f"   📋 설명: {suite.description}")
+        print(f"    포트: {suite.port}")
+        print(f"    설명: {suite.description}")
         print('='*80)
         
         try:
@@ -187,7 +187,7 @@ class A2AIntegrationTestRunner:
             passed_tests = sum(1 for result in detailed_results if result.passed)
             overall_passed = passed_tests == total_tests
             
-            print(f"\n✅ {suite.name} 테스트 완료: {passed_tests}/{total_tests} 성공")
+            print(f"\n {suite.name} 테스트 완료: {passed_tests}/{total_tests} 성공")
             
             return IntegratedTestResult(
                 agent_name=suite.name,
@@ -200,7 +200,7 @@ class A2AIntegrationTestRunner:
             
         except Exception as e:
             error_msg = f"테스트 실행 중 오류: {str(e)}"
-            logger.error(f"❌ {suite.name} 테스트 실패: {error_msg}")
+            logger.error(f" {suite.name} 테스트 실패: {error_msg}")
             
             return IntegratedTestResult(
                 agent_name=suite.name,
@@ -213,7 +213,7 @@ class A2AIntegrationTestRunner:
                            parallel: bool = False) -> List[IntegratedTestResult]:
         """모든 에이전트 테스트 실행"""
         
-        print("🚀 A2A 통합 테스트 러너 시작")
+        print(" A2A 통합 테스트 러너 시작")
         print("="*80)
         
         # 선택된 에이전트 필터링
@@ -222,13 +222,13 @@ class A2AIntegrationTestRunner:
             test_suites = [s for s in test_suites if s.name.lower() in 
                           [name.lower() for name in selected_agents]]
         
-        print(f"📋 실행할 테스트: {len(test_suites)}개")
+        print(f" 실행할 테스트: {len(test_suites)}개")
         for suite in test_suites:
             print(f"   • {suite.name} (포트 {suite.port})")
         
         # 테스트 실행
         if parallel:
-            print("\n⚡ 병렬 실행 모드")
+            print("\n 병렬 실행 모드")
             tasks = [self.run_single_agent_test(suite) for suite in test_suites]
             results = await asyncio.gather(*tasks, return_exceptions=True)
             
@@ -246,7 +246,7 @@ class A2AIntegrationTestRunner:
                     processed_results.append(result)
             results = processed_results
         else:
-            print("\n🔄 순차 실행 모드")
+            print("\n 순차 실행 모드")
             results = []
             for suite in test_suites:
                 result = await self.run_single_agent_test(suite)
@@ -254,7 +254,7 @@ class A2AIntegrationTestRunner:
                 
                 # 실패 시 계속할지 확인 (순차 모드에서만)
                 if not result.passed:
-                    print(f"⚠️ {suite.name} 테스트가 실패했습니다. 계속 진행합니다...")
+                    print(f"️ {suite.name} 테스트가 실패했습니다. 계속 진행합니다...")
         
         self.results = results
         return results
@@ -313,37 +313,37 @@ class A2AIntegrationTestRunner:
     
     def print_summary(self, report: Dict[str, Any]):
         """테스트 결과 요약 출력"""
-        print(f"\n{'📊 통합 테스트 결과 요약':-^80}")
+        print(f"\n{' 통합 테스트 결과 요약':-^80}")
         
         summary = report["summary"]
         performance = report["performance"]
         
-        print(f"   🎯 에이전트 성공률: {summary['passed_agents']}/{summary['total_agents']} ({summary['overall_success_rate']})")
-        print(f"   📋 개별 테스트 성공률: {summary['passed_individual_tests']}/{summary['total_individual_tests']} ({summary['individual_success_rate']})")
+        print(f"    에이전트 성공률: {summary['passed_agents']}/{summary['total_agents']} ({summary['overall_success_rate']})")
+        print(f"    개별 테스트 성공률: {summary['passed_individual_tests']}/{summary['total_individual_tests']} ({summary['individual_success_rate']})")
         print(f"   ⏱️ 총 실행 시간: {performance['total_execution_time_ms']:.0f}ms")
-        print(f"   ⚡ 평균 실행 시간: {performance['average_execution_time_ms']:.0f}ms/agent")
+        print(f"    평균 실행 시간: {performance['average_execution_time_ms']:.0f}ms/agent")
         
-        print(f"\n{'📈 에이전트별 상세 결과':-^60}")
+        print(f"\n{' 에이전트별 상세 결과':-^60}")
         for agent_result in report["agent_results"]:
-            status = "✅ PASS" if agent_result["passed"] else "❌ FAIL"
+            status = " PASS" if agent_result["passed"] else " FAIL"
             print(f"   {status} {agent_result['agent_name']:<20} "
                   f"{agent_result['success_rate']:>8} "
                   f"({agent_result['execution_time_ms']:>6.0f}ms)")
             
             if agent_result["error_message"]:
-                print(f"      💥 오류: {agent_result['error_message']}")
+                print(f"       오류: {agent_result['error_message']}")
         
         # 전체 평가
         overall_rate = float(summary['overall_success_rate'].rstrip('%'))
-        print(f"\n{'🏁 최종 평가':-^60}")
+        print(f"\n{' 최종 평가':-^60}")
         if overall_rate >= 90:
-            print("   🎉 A2A 통합이 완벽하게 검증되었습니다!")
+            print("    A2A 통합이 완벽하게 검증되었습니다!")
         elif overall_rate >= 80:
-            print("   ✅ A2A 통합이 성공적으로 검증되었습니다.")
+            print("    A2A 통합이 성공적으로 검증되었습니다.")
         elif overall_rate >= 60:
-            print("   ⚠️  A2A 통합에 일부 개선이 필요합니다.")
+            print("   ️  A2A 통합에 일부 개선이 필요합니다.")
         else:
-            print("   🔴 A2A 통합에 대폭적인 개선이 필요합니다.")
+            print("    A2A 통합에 대폭적인 개선이 필요합니다.")
     
     async def save_report(self, report: Dict[str, Any]) -> Path:
         """테스트 리포트 파일 저장"""
@@ -355,7 +355,7 @@ class A2AIntegrationTestRunner:
         with open(report_file, "w", encoding="utf-8") as f:
             json.dump(report, f, ensure_ascii=False, indent=2)
         
-        print(f"\n💾 상세 테스트 리포트가 {report_file}에 저장되었습니다.")
+        print(f"\n 상세 테스트 리포트가 {report_file}에 저장되었습니다.")
         return report_file
 
 
@@ -395,14 +395,14 @@ async def main():
         overall_rate = float(report["summary"]["overall_success_rate"].rstrip('%'))
         exit_code = 0 if overall_rate >= 80 else 1
         
-        print(f"\n🔚 테스트 완료 (Exit Code: {exit_code})")
+        print(f"\n 테스트 완료 (Exit Code: {exit_code})")
         return exit_code
         
     except KeyboardInterrupt:
-        print("\n⛔ 사용자에 의해 테스트가 중단되었습니다.")
+        print("\n 사용자에 의해 테스트가 중단되었습니다.")
         return 130
     except Exception as e:
-        print(f"\n❌ 치명적 오류: {str(e)}")
+        print(f"\n 치명적 오류: {str(e)}")
         import traceback
         print(f"상세 오류: {traceback.format_exc()}")
         return 1

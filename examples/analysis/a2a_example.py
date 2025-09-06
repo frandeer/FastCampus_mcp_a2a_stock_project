@@ -65,14 +65,14 @@ class AnalysisIntegrationTestResult:
         report = f"""
 🧪 AnalysisAgent A2A 통합 테스트 보고서
 {'='*50}
-📊 테스트 결과: {self.passed_tests}/{self.total_tests} 성공
+ 테스트 결과: {self.passed_tests}/{self.total_tests} 성공
 ⏱️  실행 시간: {duration:.2f}초
-📅 실행 시간: {self.start_time.strftime('%Y-%m-%d %H:%M:%S') if self.start_time else 'N/A'}
+ 실행 시간: {self.start_time.strftime('%Y-%m-%d %H:%M:%S') if self.start_time else 'N/A'}
 
-📋 상세 결과:
+ 상세 결과:
 """
         for test_case in self.test_cases:
-            status = "✅ 성공" if test_case["success"] else "❌ 실패"
+            status = " 성공" if test_case["success"] else " 실패"
             report += f"   {status} - {test_case['test_name']}\n"
             if not test_case["success"] and "error" in test_case["details"]:
                 report += f"     오류: {test_case['details']['error']}\n"
@@ -124,7 +124,7 @@ def validate_analysis_output(response: Dict[str, Any], expected_agent_type: str 
     
     # Category signal 검증
     if validation_result["category_signals_found"]:
-        print(f"    📊 발견된 카테고리 신호: {', '.join(validation_result['category_signals_found'])}")
+        print(f"     발견된 카테고리 신호: {', '.join(validation_result['category_signals_found'])}")
     else:
         validation_result["warnings"].append("Category-based 투자 신호를 찾을 수 없습니다")
     
@@ -139,7 +139,7 @@ def validate_analysis_output(response: Dict[str, Any], expected_agent_type: str 
     
     if found_dimensions:
         validation_result["found_dimensions"] = list(set(found_dimensions))
-        print(f"    📈 발견된 분석 차원: {', '.join(found_dimensions)}")
+        print(f"     발견된 분석 차원: {', '.join(found_dimensions)}")
     
     return validation_result
 
@@ -161,10 +161,10 @@ async def test_category_signal_consistency(
     test_results = []
     signals_found = []
     
-    print("  📊 Category-based Signal 일관성 테스트 (5회 실행)...")
+    print("   Category-based Signal 일관성 테스트 (5회 실행)...")
     
     for i in range(5):
-        print(f"    🔄 테스트 실행 {i+1}/5...")
+        print(f"     테스트 실행 {i+1}/5...")
         try:
             async with A2AClientManagerV2(base_url=analysis_url) as client_manager:
                 response = await client_manager.send_data_with_full_messages(input_data)
@@ -213,9 +213,9 @@ async def test_category_signal_consistency(
         max_frequency = max(consistency_analysis["signal_frequency"].values()) if consistency_analysis["signal_frequency"] else 0
         consistency_analysis["consistency_score"] = max_frequency / len(successful_runs)
     
-    print(f"    📊 일관성 분석 완료: {len(successful_runs)}/5 성공")
-    print(f"    🎯 주요 신호: {consistency_analysis['all_signals_found']}")
-    print(f"    📈 일관성 점수: {consistency_analysis['consistency_score']:.2f}")
+    print(f"     일관성 분석 완료: {len(successful_runs)}/5 성공")
+    print(f"     주요 신호: {consistency_analysis['all_signals_found']}")
+    print(f"     일관성 점수: {consistency_analysis['consistency_score']:.2f}")
     
     return {
         "test_results": test_results,
@@ -237,7 +237,7 @@ async def test_four_dimension_analysis(
         "user_question": "종합적인 4차원 분석을 수행해주세요.",
     }
     
-    print("  📈 4차원 분석 검증 테스트...")
+    print("   4차원 분석 검증 테스트...")
     
     try:
         async with A2AClientManagerV2(base_url=analysis_url) as client_manager:
@@ -276,9 +276,9 @@ async def test_four_dimension_analysis(
         dimensions_covered = sum(1 for d in found_dimensions.values() if d["found"])
         coverage_score = dimensions_covered / 4
         
-        print(f"    📊 4차원 분석 커버리지: {dimensions_covered}/4 ({coverage_score*100:.1f}%)")
+        print(f"     4차원 분석 커버리지: {dimensions_covered}/4 ({coverage_score*100:.1f}%)")
         for dimension, info in found_dimensions.items():
-            status = "✅" if info["found"] else "❌"
+            status = "" if info["found"] else ""
             keywords = info["keywords_found"][:3]  # 처음 3개만 표시
             print(f"    {status} {dimension}: {', '.join(keywords) if keywords else '미발견'}")
         
@@ -310,15 +310,15 @@ async def check_a2a_server() -> bool:
         try:
             response = await client.get(server_url, timeout=2.0)
             if response.status_code == 200:
-                print(f"✅ Analysis A2A 서버: 정상 작동")
+                print(f" Analysis A2A 서버: 정상 작동")
                 return True
             else:
-                print(f"⚠️ Analysis A2A 서버: 응답 이상 (status: {response.status_code})")
+                print(f"️ Analysis A2A 서버: 응답 이상 (status: {response.status_code})")
                 return False
         except Exception as e:
-            print(f"❌ Analysis A2A 서버: 연결 실패")
+            print(f" Analysis A2A 서버: 연결 실패")
             print(f"   오류: {str(e)[:100]}")
-            print("\n💡 해결 방법:")
+            print("\n 해결 방법:")
             print("   1. 터미널에서 다음 명령 실행:")
             print("      docker-compose -f docker/a2a_agents/docker-compose.yml up analysis-agent")
             print("   2. 서버가 포트 8002에서 실행 중인지 확인")
@@ -342,7 +342,7 @@ async def call_analysis_via_a2a(
         "user_question": user_question,
     }
     
-    print("\n📤 분석 요청 전송:")
+    print("\n 분석 요청 전송:")
     print(f"   - 종목: {symbols}")
     print(f"   - 수집된 데이터: {list(collected_data.keys())}")
     print(f"   - 질문: {user_question}")
@@ -361,14 +361,14 @@ async def call_analysis_via_a2a(
                 return response_data
                 
         except Exception as e:
-            print(f"❌ A2A 호출 실패: {str(e)}")
+            print(f" A2A 호출 실패: {str(e)}")
             raise
 
 
 def parse_analysis_response(response_text: str):
     """Analysis Agent 응답 파싱 및 출력"""
     
-    print("\n📊 Agent 응답:")
+    print("\n Agent 응답:")
     print("-" * 50)
     
     # 응답을 섹션별로 분리하여 표시
@@ -381,7 +381,7 @@ def parse_analysis_response(response_text: str):
             continue
             
         # 섹션 헤더 감지
-        if line.startswith("📊") or line.startswith("🎯") or line.startswith("💡"):
+        if line.startswith("") or line.startswith("") or line.startswith(""):
             current_section = line
             print(f"\n{line}")
         elif line.startswith("-") and current_section:
@@ -419,7 +419,7 @@ def format_analysis_result(result: Dict[str, Any]):
                         break
                 
                 if final_ai_message:
-                    print("✅ 주식 데이터 통합 분석 완료!")
+                    print(" 주식 데이터 통합 분석 완료!")
                     
                     # 도구 호출 통계 (실제 구조: message.data.additional_kwargs.tool_calls)
                     tool_calls_count = 0
@@ -430,12 +430,12 @@ def format_analysis_result(result: Dict[str, Any]):
                             if "tool_calls" in additional_kwargs:
                                 tool_calls_count += len(additional_kwargs["tool_calls"])
                     
-                    print(f"🔧 도구 호출 횟수: {tool_calls_count}")
-                    print(f"💬 총 메시지 수: {len(messages)}")
+                    print(f" 도구 호출 횟수: {tool_calls_count}")
+                    print(f" 총 메시지 수: {len(messages)}")
                     
                     # 분석 내용 출력 (실제 구조: message.data.content)
                     analysis_content = final_ai_message["data"]["content"]
-                    print("\n📊 Agent 응답:")
+                    print("\n Agent 응답:")
                     print("-" * 50)
                     
                     # 분석 내용을 줄 단위로 출력 (처음 20줄)
@@ -448,28 +448,28 @@ def format_analysis_result(result: Dict[str, Any]):
                         print("  ... (더 많은 내용은 JSON 파일 참조)")
                     
                     # 메타데이터
-                    print("\n📊 메타데이터:")
+                    print("\n 메타데이터:")
                     print(f"  - Agent 이름: {first_data_part.get('agent_metadata', {}).get('agent_name', 'AnalysisAgent')}")
                     print(f"  - 실행 성공: True")
                     print(f"  - 전체 DataPart 수: {len(data_parts)}")
                     
                     return
         
-        print("❌ 분석 실패: 유효한 분석 결과를 찾을 수 없습니다.")
+        print(" 분석 실패: 유효한 분석 결과를 찾을 수 없습니다.")
         return
     else:
         # 기존 포맷 호환성 유지
         main_result = result
         
         if not main_result.get("success", False):
-            print(f"❌ 분석 실패: {main_result.get('error', 'Unknown error')}")
+            print(f" 분석 실패: {main_result.get('error', 'Unknown error')}")
             return
     
     # 전체 메시지 히스토리 표시
     if "full_message_history" in result:
         message_history = result["full_message_history"]
         if message_history:
-            print(f"\n📚 전체 메시지 히스토리 ({len(message_history)}개 메시지):")
+            print(f"\n 전체 메시지 히스토리 ({len(message_history)}개 메시지):")
             print("-" * 60)
             for i, msg in enumerate(message_history, 1):
                 role = msg.get('role', 'unknown')
@@ -477,7 +477,7 @@ def format_analysis_result(result: Dict[str, Any]):
                 timestamp = msg.get('timestamp', 'N/A')
 
                 # 역할 이모지
-                role_emoji = {"user": "👤", "agent": "🤖", "system": "⚙️"}.get(role, "❓")
+                role_emoji = {"user": "", "agent": "🤖", "system": "️"}.get(role, "")
 
                 print(f"{role_emoji} 메시지 {i} ({role}) - {timestamp}")
                 if content:
@@ -495,7 +495,7 @@ def format_analysis_result(result: Dict[str, Any]):
     if "streaming_text" in result:
         streaming_text = result["streaming_text"]
         if streaming_text:
-            print("\n🌊 스트리밍 텍스트:")
+            print("\n 스트리밍 텍스트:")
             print("-" * 50)
             # 스트리밍 텍스트를 줄 단위로 출력
             for line in streaming_text.split("\n")[:15]:  # 처음 15줄만
@@ -506,9 +506,9 @@ def format_analysis_result(result: Dict[str, Any]):
     
     # 이벤트 카운트 표시
     if "event_count" in result:
-        print(f"\n⚡ 처리된 이벤트 수: {result['event_count']}")
+        print(f"\n 처리된 이벤트 수: {result['event_count']}")
     
-    print("\n✨ Analysis Agent A2A 호출 성공!")
+    print("\n Analysis Agent A2A 호출 성공!")
 
 
 async def main():
@@ -519,7 +519,7 @@ async def main():
     
     # 1. A2A 서버 상태 확인
     if not await check_a2a_server():
-        print("\n⚠️ A2A 서버가 실행되지 않았습니다.")
+        print("\n️ A2A 서버가 실행되지 않았습니다.")
         print("위의 해결 방법을 따라 서버를 먼저 실행해주세요.")
         return
     
@@ -593,7 +593,7 @@ async def main():
         try:
             if test_type == "standard":
                 # 기본 분석 테스트
-                print("\n🔄 A2A 프로토콜을 통해 분석 중...")
+                print("\n A2A 프로토콜을 통해 분석 중...")
                 result = await call_analysis_via_a2a(
                     symbols=test_case["symbols"],
                     collected_data=test_case["collected_data"],
@@ -666,8 +666,8 @@ async def main():
                     
                 validation = validate_analysis_output(final_result, "analysis")
                 
-                print(f"  📋 A2AOutput 검증 결과:")
-                print(f"    - 유효성: {'✅ 통과' if validation['valid'] else '❌ 실패'}")
+                print(f"   A2AOutput 검증 결과:")
+                print(f"    - 유효성: {' 통과' if validation['valid'] else ' 실패'}")
                 print(f"    - 발견된 필드: {', '.join(validation['found_fields'])}")
                 if validation.get('category_signals_found'):
                     print(f"    - Category 신호: {', '.join(validation['category_signals_found'])}")
@@ -695,10 +695,10 @@ async def main():
             with open(output_file, "w", encoding="utf-8") as f:
                 json.dump(result, f, ensure_ascii=False, indent=2)
             
-            print(f"\n💾 전체 결과가 {output_file}에 저장되었습니다.")
+            print(f"\n 전체 결과가 {output_file}에 저장되었습니다.")
             
         except Exception as e:
-            print(f"\n❌ 테스트 실행 중 오류 발생: {str(e)}")
+            print(f"\n 테스트 실행 중 오류 발생: {str(e)}")
             import traceback
             traceback.print_exc()
             
@@ -725,11 +725,11 @@ async def main():
     with open(report_file, "w", encoding="utf-8") as f:
         f.write(report)
     
-    print(f"\n📄 통합 테스트 보고서가 {report_file}에 저장되었습니다.")
+    print(f"\n 통합 테스트 보고서가 {report_file}에 저장되었습니다.")
     
     print_section("Analysis Agent A2A 통합 테스트 완료")
-    print("✨ 모든 Analysis Agent 통합 테스트가 완료되었습니다.")
-    print(f"🎯 테스트 성공률: {test_result.passed_tests}/{test_result.total_tests} ({test_result.passed_tests/test_result.total_tests*100:.1f}%)")
+    print(" 모든 Analysis Agent 통합 테스트가 완료되었습니다.")
+    print(f" 테스트 성공률: {test_result.passed_tests}/{test_result.total_tests} ({test_result.passed_tests/test_result.total_tests*100:.1f}%)")
     
     # 테스트 실패 시 종료 코드 반환
     return test_result.failed_tests == 0

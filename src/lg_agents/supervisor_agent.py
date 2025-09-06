@@ -206,7 +206,7 @@ class SupervisorAgent(BaseGraphAgent):
             ]
             state["success"] = True # 요청 성공
 
-            logger.info(f"✅ Workflow pattern: {state['workflow_pattern']}")
+            logger.info(f" Workflow pattern: {state['workflow_pattern']}")
             return state
 
         except Exception as e:
@@ -246,10 +246,10 @@ class SupervisorAgent(BaseGraphAgent):
             else:
                 # 오류가 발생한 경우 오류 메시지를 AIMessage로 생성
                 error_msg = response.get("error", "데이터 수집 중 오류가 발생했습니다.")
-                state["messages"] = [AIMessage(content=f"❌ DataCollectorAgent 오류: {error_msg}")]
+                state["messages"] = [AIMessage(content=f" DataCollectorAgent 오류: {error_msg}")]
                 state["success"] = False # 요청 실패
 
-            logger.info("✅ DataCollectorAgent completed")
+            logger.info(" DataCollectorAgent completed")
             return state
 
         except Exception as e:
@@ -291,10 +291,10 @@ class SupervisorAgent(BaseGraphAgent):
             else:
                 # 오류가 발생한 경우 오류 메시지를 AIMessage로 생성
                 error_msg = response.get("error", "분석 중 오류가 발생했습니다.")
-                state["messages"] = [AIMessage(content=f"❌ AnalysisAgent 오류: {error_msg}")]
+                state["messages"] = [AIMessage(content=f" AnalysisAgent 오류: {error_msg}")]
                 state["success"] = False # 요청 실패
 
-            logger.info("✅ AnalysisAgent completed")
+            logger.info(" AnalysisAgent completed")
             return state
 
         except Exception as e:
@@ -339,9 +339,9 @@ class SupervisorAgent(BaseGraphAgent):
             else:
                 # 오류가 발생한 경우 오류 메시지를 AIMessage로 생성
                 error_msg = response.get("error", "거래 실행 중 오류가 발생했습니다.")
-                state["messages"] = [AIMessage(content=f"❌ TradingAgent 오류: {error_msg}")]
+                state["messages"] = [AIMessage(content=f" TradingAgent 오류: {error_msg}")]
                 state["success"] = False # 요청 실패
-            logger.info("✅ TradingAgent completed")
+            logger.info(" TradingAgent completed")
             return state
 
         except Exception as e:

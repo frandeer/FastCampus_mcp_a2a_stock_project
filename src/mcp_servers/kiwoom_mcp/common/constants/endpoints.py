@@ -71,7 +71,7 @@ class KiwoomEndpoints:
         import logging
 
         logger = logging.getLogger(__name__)
-        logger.info(f"🔧 KiwoomEndpoints 모드 설정: {mode} → {cls.get_base_url(mode)}")
+        logger.info(f" KiwoomEndpoints 모드 설정: {mode} → {cls.get_base_url(mode)}")
 
     @classmethod
     def get_base_url(cls, mode: Optional[str] = None) -> str:

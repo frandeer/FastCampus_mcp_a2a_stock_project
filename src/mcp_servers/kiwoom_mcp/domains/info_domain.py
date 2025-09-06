@@ -103,12 +103,12 @@ class InfoDomainServer(KiwoomDomainServer):
     """
     키움 Info Domain 서버 - 종목 정보 중앙 허브.
 
-    🏗️ 아키텍처 위치:
+    ️ 아키텍처 위치:
     - **Layer 1 (MCP Server)**: 종목 정보 제공자
     - **Port**: 8032
     - **Domain**: info_domain
 
-    📊 주요 기능:
+     주요 기능:
     1. **종목 정보**:
        - 기본 정보 (종목명, 시가총액, PER, PBR)
        - 재무 정보 (ROE, 부채비율, 영업이익률)
@@ -129,12 +129,12 @@ class InfoDomainServer(KiwoomDomainServer):
        - NAV (순자산가치) 및 괴리도
        - ETF 구성종목 및 비중
 
-    🔧 LangGraph Agent 연동:
+     LangGraph Agent 연동:
     - **DataCollectorAgent**: 종목 기본정보 수집
     - **AnalysisAgent**: 재무 데이터 기반 fundamental 분석
     - **SupervisorAgent**: 업종/테마 비교 분석
 
-    ⚡ MCP Tools (12개):
+     MCP Tools (12개):
     - get_stock_basic_info: 주식 기본정보
     - get_stock_detail_info: 종목 상세정보
     - get_stock_list: 종목 리스트
@@ -146,7 +146,7 @@ class InfoDomainServer(KiwoomDomainServer):
     - get_etf_info: ETF 종목정보
     - get_etf_list: ETF 전체시세
 
-    💡 특징:
+     특징:
     - 종목 데이터 캠싱으로 불필요한 API 호출 최소화
     - 업종/테마 분류 자동 업데이트
     - ETF 구성종목 실시간 추적

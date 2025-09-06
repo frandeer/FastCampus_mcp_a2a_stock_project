@@ -136,7 +136,7 @@ Human-in-the-Loop 승인이 필요한 경우 명확한 리스크 분석을 제�
 
             trading_result = result.get("result", {})
 
-            # 🔍 도구 호출 검증 로직 추가
+            #  도구 호출 검증 로직 추가
             tool_calls = trading_result.get('tool_calls_made', 0)
             print("\n도구 호출 검증:")
             print(f"  - 도구 호출 횟수: {tool_calls}회")

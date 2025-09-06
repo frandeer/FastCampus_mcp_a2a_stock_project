@@ -83,7 +83,7 @@ class DataCollectorA2AAgent(BaseA2AAgent, BaseGraphAgent):
         try:
             # Load MCP tools
             self.tools = await load_data_collector_tools()
-            logger.info(f"✅ Loaded {len(self.tools)} MCP tools for DataCollector")
+            logger.info(f" Loaded {len(self.tools)} MCP tools for DataCollector")
 
             # Get system prompt
             system_prompt = get_prompt("data_collector", "system", tool_count=len(self.tools))
@@ -100,7 +100,7 @@ class DataCollectorA2AAgent(BaseA2AAgent, BaseGraphAgent):
                 context_schema=config
             )
 
-            logger.info("✅ DataCollector A2A Agent initialized successfully")
+            logger.info(" DataCollector A2A Agent initialized successfully")
 
         except Exception as e:
             logger.error(f"Failed to initialize DataCollector Agent: {e}")
@@ -183,7 +183,7 @@ class DataCollectorA2AAgent(BaseA2AAgent, BaseGraphAgent):
 
             return self.create_a2a_output(
                 status="working",
-                text_content=f"📊 데이터 수집 중: {tool_name}",
+                text_content=f" 데이터 수집 중: {tool_name}",
                 stream_event=True,
                 metadata={
                     "event_type": "tool_start",
