@@ -1,7 +1,7 @@
 # FastCampus! LangGraph, MCP, A2A 프로토콜 기반 멀티 에이전트 시스템
 
-**완전 자동화된 지능형 주식 투자 시스템**으로,  
-실시간 데이터 수집부터 리스크 관리, Human-in-the-Loop 승인까지 전체 투자 프로세스를 통합 관리합니다.
+**멀티 에이전트 A2A 기반 주식 투자 시스템**으로,  
+실시간 데이터 수집부터 리스크 관리, Human-in-the-Loop 승인까지 구성합니다.
 
 ---
 
@@ -58,32 +58,9 @@
 | Agent | Connected MCP Servers | Primary Functions |
 |-------|----------------------|------------------|
 | **DataCollectorAgent** | market_domain, info_domain, investor_domain, naver_news_mcp, tavily_search_mcp | 멀티소스 데이터 수집, 품질 검증 |
-| **AnalysisAgent** | market_domain, info_domain, financial_analysis_mcp, portfolio_domain | 4차원 통합 분석, 신호 생성 |
-| **TradingAgent** | trading_domain, portfolio_domain | 주문 실행, 리스크 관리, Human 승인 |
-| **SupervisorAgent** | (No direct connections) | 워크플로우 조정, Agent 오케스트레이션 |
-
-### 주식 데이터 분석을 위한 방법론
-
-#### **Technical Analysis (기술적 분석)**
-
-- RSI, MACD, Moving Averages, Volume 지표 통합
-- 지지/저항선 자동 계산, 트렌드 방향성 분석
-- **출력**: BULLISH|BEARISH|NEUTRAL + STRONG_BUY~STRONG_SELL
-
-#### **Fundamental Analysis (기본적 분석)**
-
-- P/E, P/B, ROE, 부채비율, 수익성 지표 평가
-- **출력**: UNDERVALUED|FAIR|OVERVALUED + 투자 신호
-
-#### **Macro Analysis (거시경제 분석)**
-
-- GDP, 인플레이션, 금리, 환율 영향 분석
-- **출력**: EXPANSION|STABLE|CONTRACTION + 섹터 추천
-
-#### **Sentiment Analysis (감성 분석)**
-
-- 뉴스 헤드라인/요약 내용 기반 시장 심리 측정
-- **출력**: POSITIVE|NEUTRAL|NEGATIVE + 대응 전략
+| **AnalysisAgent** | market_domain, info_domain, financial_analysis_mcp, portfolio_domain | 통합 분석, 매수-매도 신호 생성 |
+| **TradingAgent** | trading_domain, portfolio_domain | 주문 실행, 리스크 관리, Human-in-the-loop |
+| **SupervisorAgent** | No direct connections | 워크플로우 조정, Agent 오케스트레이션 |
 
 ## 🛠️ 기술 스택
 
@@ -112,14 +89,11 @@
 #### **런타임 & 패키지 관리**
 
 - **Python** 3.12+ - 백엔드 런타임
-- **Node.js** 20+ - 프론트엔드 런타임
 - **Docker** & **Docker Compose** - 컨테이너화 배포
 
 #### **코드 품질 & 테스팅**
 
 - **Ruff** - Python 린터 및 포매터
-- **Jest** & **Testing Library** - React 테스팅
-- **TypeScript** 5 - 타입 안전성
 
 ### **Architecture Diagram**
 
