@@ -10,7 +10,13 @@ MCP란?
 from typing import Dict, Any
 import json
 import asyncio
+import sys
+from pathlib import Path
 from fastmcp import FastMCP
+
+# 공통 유틸리티 import
+sys.path.append(str(Path(__file__).parent.parent))
+from common_utils import get_setting, print_environment_status
 
 # MCP 서버 인스턴스 생성
 mcp = FastMCP("SimpleCalculator")
@@ -49,18 +55,30 @@ async def get_calculator_info() -> Dict[str, Any]:
 
 # 서버 실행 함수
 def run_server():
-    """MCP 서버를 포트 9000에서 실행"""
+    """MCP 서버를 .env에서 설정한 포트에서 실행"""
+    
+    # 환경 설정 출력
     print("🧮 Simple Calculator MCP 서버 시작...")
-    print("📍 포트: 9000")
+    print("=" * 50)
+    print_environment_status()
+    
+    # 포트 설정 가져오기
+    port = get_setting('LEARNING_MCP_PORT', 9000, int)
+    host = get_setting('LEARNING_HOST', 'localhost', str)
+    
+    print(f"\n🚀 서버 시작 중...")
+    print(f"📍 호스트: {host}")
+    print(f"📍 포트: {port}")
     print("🔧 사용 가능한 도구:")
     print("  - add_numbers: 덧셈")
     print("  - multiply_numbers: 곱셈")
     print("  - get_calculator_info: 계산기 정보")
+    print(f"🌐 서버 URL: http://{host}:{port}/sse")
     print("-" * 50)
     
-    # 서버 실행 (포트 9000) - FastMCP가 내부적으로 async를 처리
-    mcp.run(transport="sse", host="localhost", port=9000)
+    # 서버 실행 (설정된 포트) - FastMCP가 내부적으로 async를 처리
+    mcp.run(transport="sse", host=host, port=port)
 
 if __name__ == "__main__":
-    # 서버 실행
+    # 서버 실행 (FastMCP는 자체적으로 async를 처리)
     run_server()

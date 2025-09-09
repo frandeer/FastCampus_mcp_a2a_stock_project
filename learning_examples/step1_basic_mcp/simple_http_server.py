@@ -12,8 +12,14 @@ MCP의 기본 아이디어를 이해하기 위한 간단한 HTTP 서버
 """
 
 import json
+import sys
+from pathlib import Path
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
+
+# 공통 유틸리티 import
+sys.path.append(str(Path(__file__).parent.parent))
+from common_utils import get_setting, print_environment_status
 
 class CalculatorHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -104,24 +110,83 @@ class CalculatorHandler(BaseHTTPRequestHandler):
         }
         self._send_json_response(response)
     
-    # TODO(human): 여기에 덧셈과 곱셈 함수를 구현해주세요
     def _handle_add(self, params):
         """덧셈 처리 - GET 방식"""
-        # params는 딕셔너리이고, 각 값은 리스트입니다
-        # 예: {'a': ['10'], 'b': ['5']}
-        pass
+        try:
+            # params는 딕셔너리이고, 각 값은 리스트입니다
+            # 예: {'a': ['10'], 'b': ['5']}
+            a = float(params.get('a', [0])[0])
+            b = float(params.get('b', [0])[0])
+            
+            result = a + b
+            response = {
+                "operation": "addition",
+                "method": "GET",
+                "inputs": {"a": a, "b": b},
+                "result": result,
+                "message": f"{a} + {b} = {result}"
+            }
+            self._send_json_response(response)
+            
+        except (ValueError, IndexError, TypeError) as e:
+            self._send_error(400, f"잘못된 파라미터: {str(e)}")
     
     def _handle_multiply(self, params):
         """곱셈 처리 - GET 방식"""
-        pass
+        try:
+            a = float(params.get('a', [0])[0])
+            b = float(params.get('b', [0])[0])
+            
+            result = a * b
+            response = {
+                "operation": "multiplication",
+                "method": "GET", 
+                "inputs": {"a": a, "b": b},
+                "result": result,
+                "message": f"{a} × {b} = {result}"
+            }
+            self._send_json_response(response)
+            
+        except (ValueError, IndexError, TypeError) as e:
+            self._send_error(400, f"잘못된 파라미터: {str(e)}")
     
     def _handle_add_post(self, data):
         """덧셈 처리 - POST 방식"""
-        pass
+        try:
+            a = float(data.get('a', 0))
+            b = float(data.get('b', 0))
+            
+            result = a + b
+            response = {
+                "operation": "addition",
+                "method": "POST",
+                "inputs": {"a": a, "b": b},
+                "result": result,
+                "message": f"{a} + {b} = {result}"
+            }
+            self._send_json_response(response)
+            
+        except (ValueError, TypeError) as e:
+            self._send_error(400, f"잘못된 JSON 데이터: {str(e)}")
     
     def _handle_multiply_post(self, data):
         """곱셈 처리 - POST 방식"""
-        pass
+        try:
+            a = float(data.get('a', 0))
+            b = float(data.get('b', 0))
+            
+            result = a * b
+            response = {
+                "operation": "multiplication", 
+                "method": "POST",
+                "inputs": {"a": a, "b": b},
+                "result": result,
+                "message": f"{a} × {b} = {result}"
+            }
+            self._send_json_response(response)
+            
+        except (ValueError, TypeError) as e:
+            self._send_error(400, f"잘못된 JSON 데이터: {str(e)}")
     
     def _send_json_response(self, data, status_code=200):
         """JSON 응답 전송"""
@@ -146,34 +211,42 @@ class CalculatorHandler(BaseHTTPRequestHandler):
         """로그 메시지 출력"""
         print(f"📝 {self.client_address[0]} - {format % args}")
 
-def run_server(port=9001):
-    """HTTP 서버 실행"""
-    print("🧮 Simple Calculator HTTP 서버 시작...")
+def run_server():
+    """HTTP 서버 실행 (.env 설정 사용)"""
+    
+    # 환경 설정 출력
+    print("🌐 Simple HTTP API 서버 시작...")
+    print("=" * 50)
+    print_environment_status()
+    
+    # 설정값 가져오기
+    host = get_setting('LEARNING_HOST', 'localhost', str)
+    port = get_setting('LEARNING_HTTP_PORT', 9001, int)
+    
+    print(f"\n🚀 HTTP 서버 시작 중...")
+    print(f"📍 호스트: {host}")
     print(f"📍 포트: {port}")
-    print(f"🌐 URL: http://localhost:{port}")
-    print("🔧 사용 가능한 엔드포인트:")
-    print("  - GET  /      : 서버 정보 및 도구 목록")
-    print("  - GET  /add   : 덧셈 (예: /add?a=10&b=5)")
-    print("  - GET  /multiply : 곱셈 (예: /multiply?a=7&b=8)")
-    print("  - GET  /info  : 서버 상태 정보")
-    print("  - POST /add   : 덧셈 (JSON body)")
-    print("  - POST /multiply : 곱셈 (JSON body)")
-    print("-" * 50)
-    print("💡 테스트 방법:")
-    print(f"   curl 'http://localhost:{port}/add?a=10&b=5'")
-    print(f"   curl -X POST http://localhost:{port}/add -d '{{\"a\":10,\"b\":5}}' -H 'Content-Type: application/json'")
+    print("🔧 사용 가능한 API:")
+    print("  - GET  /add?a=10&b=5      : 덧셈")
+    print("  - GET  /multiply?a=7&b=8  : 곱셈")
+    print("  - POST /add {a:10, b:5}  : 덧셈 (JSON)")
+    print("  - GET  /info             : 서버 정보")
+    print(f"🌐 서버 URL: http://{host}:{port}")
     print("-" * 50)
     
-    server = HTTPServer(('localhost', port), CalculatorHandler)
-    server.request_count = 0
-    
+    # 서버 실행
     try:
-        print("✅ 서버 실행 중... (Ctrl+C로 종료)")
-        server.serve_forever()
+        server_address = (host, port)
+        httpd = HTTPServer(server_address, CalculatorHandler)
+        print(f"✅ HTTP 서버가 {host}:{port}에서 실행 중...")
+        print("⏹️  중단하려면 Ctrl+C를 누르세요")
+        httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\n🛑 서버 종료 중...")
-        server.shutdown()
-        print("👋 서버가 종료되었습니다")
+        print("\n🛑 서버 중단 중...")
+        httpd.server_close()
+        print("✅ 서버가 안전하게 종료되었습니다")
+    except Exception as e:
+        print(f"❌ 서버 실행 오류: {e}")
 
 if __name__ == "__main__":
     run_server()
