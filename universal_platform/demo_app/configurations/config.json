@@ -1,0 +1,191 @@
+{
+  "application": {
+    "name": "Universal Platform Demo",
+    "version": "1.0.0",
+    "environment": "development",
+    "debug": true,
+    "host": "0.0.0.0",
+    "port": 8000
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "handlers": ["console", "file"],
+    "file_path": "logs/demo_app.log"
+  },
+  "database": {
+    "type": "in_memory",
+    "host": "localhost",
+    "port": 5432,
+    "name": "universal_platform_demo",
+    "username": "demo_user",
+    "password": "demo_password",
+    "pool_size": 10,
+    "echo": false
+  },
+  "event_bus": {
+    "transport_type": "memory",
+    "max_retries": 3,
+    "circuit_breaker_threshold": 5,
+    "enable_persistence": false,
+    "batch_size": 100
+  },
+  "plugins": {
+    "enable_hot_reload": true,
+    "enable_isolation": true,
+    "scan_directories": [
+      "plugins",
+      "domains/ecommerce/plugins",
+      "domains/healthcare/plugins", 
+      "domains/logistics/plugins"
+    ],
+    "auto_load": true,
+    "load_timeout_seconds": 30
+  },
+  "tenants": {
+    "default_tenant": "default",
+    "enable_multi_tenancy": true,
+    "resource_limits": {
+      "max_users": 1000,
+      "max_storage_mb": 10240,
+      "max_api_calls_per_hour": 10000
+    }
+  },
+  "domains": {
+    "ecommerce": {
+      "enabled": true,
+      "features": {
+        "inventory_management": true,
+        "payment_processing": true,
+        "order_fulfillment": true,
+        "customer_loyalty": true
+      },
+      "settings": {
+        "default_currency": "USD",
+        "tax_rate": 0.08,
+        "free_shipping_threshold": 50.00,
+        "loyalty_points_per_dollar": 1
+      }
+    },
+    "healthcare": {
+      "enabled": true,
+      "features": {
+        "patient_management": true,
+        "appointment_scheduling": true,
+        "medical_records": true,
+        "insurance_processing": false
+      },
+      "settings": {
+        "appointment_duration_minutes": 30,
+        "advance_booking_days": 90,
+        "reminder_hours": 24
+      }
+    },
+    "logistics": {
+      "enabled": true,
+      "features": {
+        "shipment_tracking": true,
+        "warehouse_management": true,
+        "route_optimization": false,
+        "delivery_scheduling": true
+      },
+      "settings": {
+        "default_shipping_days": 3,
+        "expedited_shipping_days": 1,
+        "max_delivery_attempts": 3
+      }
+    }
+  },
+  "security": {
+    "jwt_secret": "demo-secret-key-change-in-production",
+    "jwt_algorithm": "HS256",
+    "session_timeout_hours": 24,
+    "max_failed_attempts": 5,
+    "lockout_duration_minutes": 30,
+    "password_policy": {
+      "min_length": 8,
+      "require_uppercase": true,
+      "require_lowercase": true,
+      "require_digits": true,
+      "require_special_chars": false
+    }
+  },
+  "monitoring": {
+    "metrics_collection_interval": 30,
+    "health_check_interval": 60,
+    "enable_prometheus": true,
+    "retention_hours": 168
+  },
+  "integrations": {
+    "payment_gateways": {
+      "stripe": {
+        "enabled": false,
+        "api_key": "demo_key",
+        "webhook_secret": "demo_webhook_secret"
+      },
+      "paypal": {
+        "enabled": false,
+        "client_id": "demo_client_id",
+        "client_secret": "demo_client_secret"
+      }
+    },
+    "notification_services": {
+      "email": {
+        "enabled": true,
+        "provider": "smtp",
+        "smtp_host": "localhost",
+        "smtp_port": 587,
+        "username": "demo@example.com",
+        "password": "demo_password"
+      },
+      "sms": {
+        "enabled": false,
+        "provider": "twilio",
+        "account_sid": "demo_sid",
+        "auth_token": "demo_token"
+      }
+    },
+    "analytics": {
+      "google_analytics": {
+        "enabled": false,
+        "tracking_id": "GA-DEMO-123456"
+      },
+      "mixpanel": {
+        "enabled": false,
+        "project_token": "demo_token"
+      }
+    }
+  },
+  "cache": {
+    "type": "memory",
+    "redis_url": "redis://localhost:6379/0",
+    "default_ttl": 3600,
+    "max_size": 1000
+  },
+  "api": {
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 60,
+      "burst_size": 10
+    },
+    "cors": {
+      "allow_origins": ["*"],
+      "allow_credentials": true,
+      "allow_methods": ["*"],
+      "allow_headers": ["*"]
+    },
+    "pagination": {
+      "default_page_size": 20,
+      "max_page_size": 100
+    }
+  },
+  "development": {
+    "auto_reload": true,
+    "debug_toolbar": true,
+    "mock_external_services": true,
+    "demo_data": {
+      "load_sample_data": true,
+      "reset_on_restart": false
+    }
+  }
+}

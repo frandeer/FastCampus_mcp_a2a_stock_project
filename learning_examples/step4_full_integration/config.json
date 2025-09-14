@@ -1,0 +1,93 @@
+{
+    "platform": {
+        "name": "통합 한국 주식시장 분석 플랫폼",
+        "version": "1.0.0",
+        "description": "LangGraph + A2A 통신 통합 데모"
+    },
+    "redis": {
+        "url": "redis://localhost:6379",
+        "db": 0,
+        "password": null
+    },
+    "websocket": {
+        "host": "localhost",
+        "port": 8765,
+        "max_connections": 100
+    },
+    "agents": {
+        "fundamental_agent": {
+            "port": 8001,
+            "specialization": "fundamental_analysis",
+            "max_concurrent_requests": 10
+        },
+        "sentiment_agent": {
+            "port": 8002,
+            "specialization": "sentiment_analysis",
+            "max_concurrent_requests": 10
+        },
+        "risk_agent": {
+            "port": 8003,
+            "specialization": "risk_analysis",
+            "max_concurrent_requests": 10
+        }
+    },
+    "stocks": {
+        "monitored": [
+            {
+                "symbol": "005930",
+                "name": "삼성전자",
+                "base_price": 75000,
+                "volatility": 0.02,
+                "market_cap": 375000000000000
+            },
+            {
+                "symbol": "373220", 
+                "name": "LG에너지솔루션",
+                "base_price": 450000,
+                "volatility": 0.03,
+                "market_cap": 107000000000000
+            },
+            {
+                "symbol": "000660",
+                "name": "SK하이닉스", 
+                "base_price": 125000,
+                "volatility": 0.025,
+                "market_cap": 91000000000000
+            }
+        ]
+    },
+    "analysis": {
+        "technical": {
+            "enabled": true,
+            "interval_seconds": 30,
+            "workflow_type": "langgraph"
+        },
+        "fundamental": {
+            "enabled": true,
+            "interval_seconds": 60,
+            "agent_id": "fundamental_agent"
+        },
+        "sentiment": {
+            "enabled": true,
+            "interval_seconds": 45,
+            "agent_id": "sentiment_agent"
+        },
+        "risk": {
+            "enabled": true,
+            "interval_seconds": 30,
+            "agent_id": "risk_agent"
+        }
+    },
+    "market_data": {
+        "feed_interval_seconds": 5,
+        "simulation": {
+            "enabled": true,
+            "volatility_multiplier": 1.0
+        }
+    },
+    "logging": {
+        "level": "INFO",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "file": "platform.log"
+    }
+}

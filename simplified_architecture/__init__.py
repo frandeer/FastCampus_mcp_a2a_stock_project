@@ -1,0 +1,3 @@
+"""
+Simplified Clean Architecture Implementation
+"""

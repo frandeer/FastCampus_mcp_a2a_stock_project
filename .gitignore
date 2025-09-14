@@ -36,3 +36,23 @@ GEMINI.md
 GEMINI-*.md
 QWEN.md
 QWEN-*.md
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Editor backups
+*.bak
+*.orig

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합 한국 주식시장 분석 플랫폼 - 실시간 클라이언트</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .status {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .connected { background: #e8f5e8; color: #2d5f2d; }
+        .disconnected { background: #fee; color: #d63384; }
+        
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .stock-name { font-weight: bold; }
+        .stock-code { color: #6c757d; font-size: 12px; }
+        .stock-price { font-size: 18px; font-weight: bold; }
+        .stock-change { font-size: 14px; }
+        .positive { color: #dc3545; }
+        .negative { color: #198754; }
+        
+        .analysis-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .analysis-type {
+            background: #495057;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .analysis-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .analysis-recommendations {
+            margin-top: 10px;
+        }
+        .recommendation {
+            background: #e7f3ff;
+            padding: 5px 10px;
+            margin: 5px 0;
+            border-radius: 15px;
+            font-size: 12px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover { background: #0056b3; }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover { background: #1e7e34; }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover { background: #c82333; }
+        
+        .log-container {
+            height: 200px;
+            overflow-y: auto;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .log-entry {
+            margin: 2px 0;
+        }
+        .timestamp {
+            color: #888;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 통합 한국 주식시장 분석 플랫폼</h1>
+        <p>실시간 데이터 스트리밍 + LangGraph 워크플로우 + A2A 에이전트 협업</p>
+        <div id="connectionStatus" class="status disconnected">연결 안됨</div>
+    </div>
+    
+    <div class="container">
+        <!-- 주식 데이터 섹션 -->
+        <div class="card">
+            <h3>📈 실시간 주식 데이터</h3>
+            <div class="controls">
+                <button class="btn-primary" onclick="connectWebSocket()">연결</button>
+                <button class="btn-danger" onclick="disconnectWebSocket()">연결 해제</button>
+            </div>
+            <div id="stockData">
+                <p>웹소켓 연결 후 실시간 데이터를 확인하세요.</p>
+            </div>
+        </div>
+        
+        <!-- 분석 결과 섹션 -->
+        <div class="card">
+            <h3>🧠 AI 분석 결과</h3>
+            <div class="controls">
+                <button class="btn-success" onclick="requestAnalysis('005930', 'technical')">삼성전자 분석</button>
+                <button class="btn-success" onclick="requestAnalysis('373220', 'fundamental')">LG에너지 분석</button>
+                <button class="btn-success" onclick="requestAnalysis('000660', 'sentiment')">SK하이닉스 분석</button>
+            </div>
+            <div id="analysisData">
+                <p>분석 요청 후 결과를 확인하세요.</p>
+            </div>
+        </div>
+        
+        <!-- 시스템 로그 섹션 -->
+        <div class="card full-width">
+            <h3>📊 시스템 로그</h3>
+            <div class="controls">
+                <button class="btn-primary" onclick="clearLogs()">로그 지우기</button>
+                <button class="btn-success" onclick="testSystemHealth()">시스템 상태 확인</button>
+            </div>
+            <div id="systemLogs" class="log-container">
+                <div class="log-entry">
+                    <span class="timestamp">[시작]</span> 
+                    클라이언트 준비 완료. '연결' 버튼을 클릭하여 플랫폼에 연결하세요.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let websocket = null;
+        let isConnected = false;
+        let reconnectInterval = null;
+        
+        // 주식 데이터 저장
+        const stockDataStore = {
+            '005930': { name: '삼성전자', data: null },
+            '373220': { name: 'LG에너지솔루션', data: null },
+            '000660': { name: 'SK하이닉스', data: null }
+        };
+        
+        // 분석 결과 저장
+        const analysisStore = {};
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logContainer = document.getElementById('systemLogs');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        function updateConnectionStatus(connected) {
+            const statusEl = document.getElementById('connectionStatus');
+            isConnected = connected;
+            
+            if (connected) {
+                statusEl.textContent = '연결됨';
+                statusEl.className = 'status connected';
+            } else {
+                statusEl.textContent = '연결 안됨';
+                statusEl.className = 'status disconnected';
+            }
+        }
+        
+        function connectWebSocket() {
+            if (isConnected) {
+                log('이미 연결되어 있습니다.');
+                return;
+            }
+            
+            try {
+                websocket = new WebSocket('ws://localhost:8765');
+                
+                websocket.onopen = function(event) {
+                    log('✅ 웹소켓 연결 성공');
+                    updateConnectionStatus(true);
+                    
+                    // 연결 성공 시 재연결 인터벌 정리
+                    if (reconnectInterval) {
+                        clearInterval(reconnectInterval);
+                        reconnectInterval = null;
+                    }
+                };
+                
+                websocket.onmessage = function(event) {
+                    try {
+                        const message = JSON.parse(event.data);
+                        handleWebSocketMessage(message);
+                    } catch (e) {
+                        log(`❌ 메시지 파싱 오류: ${e.message}`);
+                    }
+                };
+                
+                websocket.onclose = function(event) {
+                    log(`⚠️ 웹소켓 연결 종료 (코드: ${event.code})`);
+                    updateConnectionStatus(false);
+                    websocket = null;
+                    
+                    // 자동 재연결 시도
+                    if (!reconnectInterval) {
+                        reconnectInterval = setInterval(() => {
+                            log('🔄 재연결 시도 중...');
+                            connectWebSocket();
+                        }, 5000);
+                    }
+                };
+                
+                websocket.onerror = function(error) {
+                    log(`❌ 웹소켓 오류: ${error.message || '연결 실패'}`);
+                    updateConnectionStatus(false);
+                };
+                
+            } catch (e) {
+                log(`❌ 웹소켓 연결 실패: ${e.message}`);
+                updateConnectionStatus(false);
+            }
+        }
+        
+        function disconnectWebSocket() {
+            if (reconnectInterval) {
+                clearInterval(reconnectInterval);
+                reconnectInterval = null;
+            }
+            
+            if (websocket) {
+                websocket.close();
+                websocket = null;
+            }
+            
+            updateConnectionStatus(false);
+            log('🔌 웹소켓 연결 해제');
+        }
+        
+        function handleWebSocketMessage(message) {
+            const type = message.type;
+            const data = message.data;
+            
+            switch (type) {
+                case 'welcome':
+                    log(`🎉 ${message.message}`);
+                    log(`📈 모니터링 종목: ${message.stocks.join(', ')}`);
+                    break;
+                case 'stock_update':
+                case 'initial_stock':
+                    handleStockUpdate(data);
+                    break;
+                case 'analysis_update':
+                    handleAnalysisUpdate(data);
+                    break;
+                case 'analysis_requested':
+                    log(`📊 ${data.symbol} ${data.analysis_type} 분석 요청 접수`);
+                    break;
+                case 'error':
+                    log(`❌ 서버 오류: ${message.message}`);
+                    break;
+                default:
+                    log(`📨 알 수 없는 메시지 타입: ${type}`);
+            }
+        }
+        
+        function handleStockUpdate(data) {
+            const symbol = data.symbol;
+            const stockInfo = stockDataStore[symbol];
+            
+            if (stockInfo) {
+                stockInfo.data = data;
+                log(`📈 ${stockInfo.name}(${symbol}) 업데이트: ${Number(data.price).toLocaleString()}원 (${data.change_percent > 0 ? '+' : ''}${data.change_percent.toFixed(2)}%)`);
+                updateStockDisplay();
+            }
+        }
+        
+        function handleAnalysisUpdate(data) {
+            const symbol = data.stock_symbol;
+            const analysisType = data.analysis_type;
+            const key = `${symbol}_${analysisType}`;
+            
+            analysisStore[key] = data;
+            
+            const stockName = stockDataStore[symbol]?.name || symbol;
+            log(`🧠 ${stockName} ${analysisType} 분석 완료: ${data.score.toFixed(1)}점 (신뢰도: ${(data.confidence * 100).toFixed(0)}%)`);
+            
+            updateAnalysisDisplay();
+        }
+        
+        function updateStockDisplay() {
+            const container = document.getElementById('stockData');
+            let html = '';
+            
+            Object.entries(stockDataStore).forEach(([symbol, info]) => {
+                if (info.data) {
+                    const data = info.data;
+                    const isPositive = data.change_percent > 0;
+                    const changeClass = isPositive ? 'positive' : 'negative';
+                    const changePrefix = isPositive ? '+' : '';
+                    
+                    html += `
+                        <div class="stock-item">
+                            <div>
+                                <div class="stock-name">${info.name}</div>
+                                <div class="stock-code">${symbol}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="stock-price">${Number(data.price).toLocaleString()}원</div>
+                                <div class="stock-change ${changeClass}">
+                                    ${changePrefix}${Number(data.change).toLocaleString()}원 (${changePrefix}${data.change_percent.toFixed(2)}%)
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            container.innerHTML = html || '<p>실시간 데이터를 기다리는 중...</p>';
+        }
+        
+        function updateAnalysisDisplay() {
+            const container = document.getElementById('analysisData');
+            let html = '';
+            
+            Object.values(analysisStore).forEach(analysis => {
+                const stockName = stockDataStore[analysis.stock_symbol]?.name || analysis.stock_symbol;
+                const typeLabels = {
+                    'technical': '기술적분석',
+                    'fundamental': '기본적분석',
+                    'sentiment': '센티먼트분석',
+                    'risk': '리스크분석'
+                };
+                
+                html += `
+                    <div class="analysis-item">
+                        <div class="analysis-header">
+                            <div>
+                                <strong>${stockName}</strong>
+                                <div class="analysis-type">${typeLabels[analysis.analysis_type] || analysis.analysis_type}</div>
+                            </div>
+                            <div class="analysis-score">${analysis.score.toFixed(1)}</div>
+                        </div>
+                        <div>신뢰도: ${(analysis.confidence * 100).toFixed(0)}%</div>
+                        <div>분석: ${analysis.reasoning}</div>
+                        <div class="analysis-recommendations">
+                            ${analysis.recommendations.map(rec => `<span class="recommendation">${rec}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html || '<p>분석 결과를 기다리는 중...</p>';
+        }
+        
+        function requestAnalysis(symbol, analysisType) {
+            if (!isConnected) {
+                log('❌ 웹소켓 연결이 필요합니다.');
+                return;
+            }
+            
+            const message = {
+                type: 'request_analysis',
+                symbol: symbol,
+                analysis_type: analysisType
+            };
+            
+            try {
+                websocket.send(JSON.stringify(message));
+                log(`📊 ${symbol} ${analysisType} 분석 요청 전송`);
+            } catch (e) {
+                log(`❌ 분석 요청 전송 실패: ${e.message}`);
+            }
+        }
+        
+        function clearLogs() {
+            document.getElementById('systemLogs').innerHTML = '';
+            log('로그가 지워졌습니다.');
+        }
+        
+        async function testSystemHealth() {
+            log('🏥 시스템 상태 확인 중...');
+            
+            // 각 에이전트 상태 확인
+            const agents = [
+                { name: '기본적 분석 에이전트', url: 'http://localhost:8001/status' },
+                { name: '센티먼트 분석 에이전트', url: 'http://localhost:8002/status' },
+                { name: '리스크 분석 에이전트', url: 'http://localhost:8003/status' }
+            ];
+            
+            for (const agent of agents) {
+                try {
+                    const response = await fetch(agent.url);
+                    if (response.ok) {
+                        log(`✅ ${agent.name}: 정상`);
+                    } else {
+                        log(`⚠️ ${agent.name}: 응답 오류 (${response.status})`);
+                    }
+                } catch (e) {
+                    log(`❌ ${agent.name}: 연결 불가`);
+                }
+            }
+            
+            // 웹소켓 연결 상태
+            log(`🔌 웹소켓 연결: ${isConnected ? '정상' : '끊어짐'}`);
+        }
+        
+        // 페이지 로드 시 자동 연결 시도
+        window.addEventListener('load', function() {
+            log('🚀 한국 주식시장 분석 플랫폼 클라이언트 시작');
+            log('💡 "연결" 버튼을 클릭하여 실시간 데이터를 받아보세요.');
+            
+            // 5초 후 자동 연결 시도
+            setTimeout(() => {
+                log('🔄 자동 연결 시도...');
+                connectWebSocket();
+            }, 2000);
+        });
+        
+        // 페이지 종료 시 연결 정리
+        window.addEventListener('beforeunload', function() {
+            disconnectWebSocket();
+        });
+    </script>
+</body>
+</html>
